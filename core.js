@@ -1,9 +1,12 @@
+var cache;
 function main(){
-	setInterval(run,1000/30);
+    setInterval(run, 1000 / 30);
 }
 function run(){
-	var tz=document.getElementById('timeZone');
-	time=new Date();
-	tz.innerHTML=time.toLocaleDateString()+'<br/>'+time.toLocaleTimeString();
+    time = new Date();
+    if (cache!= time.getSeconds()) {
+        var tz = document.getElementById('timeZone');
+        tz.innerHTML = time.toLocaleDateString() + '<br/>' + time.toLocaleTimeString();
+		cache=time.getSeconds();
+    }
 }
-
