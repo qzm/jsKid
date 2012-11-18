@@ -24,6 +24,9 @@ var jsGame = {
 		},
 		remove: function(key){
 			delete this.map[key]
+		},
+		plus: function(key,step){
+			return this.map[key]+=step;
 		}
 	},
 	//动画入口
