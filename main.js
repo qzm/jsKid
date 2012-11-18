@@ -11,6 +11,7 @@ function main(){
             var tz = document.getElementById('timeZone');
             tz.innerHTML = time.toLocaleDateString() + '<br/>' + time.toLocaleTimeString();
             $.Cache.set('timeCache', time.getSeconds());
+			console.log($.Cache.get('click'));
         }
         time = new Date();
     });

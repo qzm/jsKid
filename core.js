@@ -1,7 +1,14 @@
 var jsGame = {
     //初始化资源
+	browser:true,
     init: function(args){
+        if (window.ActiveXObject) {
+			this.browser=false;
+            alert("Not IE !");
+			return null;
+        }
         args.call();
+		return null;
     },
     //缓存机制
     Cache: {
@@ -19,7 +26,8 @@ var jsGame = {
             delete this.map[key]
         }
     },
-    message: {
+	//消息机制
+    Message: {
         queue: [],
         en: function(msg){
             for (var m in this.queue) 
@@ -29,17 +37,20 @@ var jsGame = {
             return true;
         },
         de: function(){
-			if(this.queue[0]!=null)
-				return this.queue[0];
-        	return null;
+            if (this.queue[0] != null) 
+                return this.queue[0];
+            return null;
         }
     },
     //动画入口
     run: function(funtionToRun){
-		if(this.message.queue[0]!=null){
-			this.message.queue[0].call();
+		if (this.browser) {
+			if (this.Message.queue[0] != null) {
+				this.Message.queue[0].call();
+			}
+			funtionToRun.call();
+			setInterval(funtionToRun, 1000 / 30);
 		}
-        setInterval(funtionToRun, 1000 / 30);
     }
 }
 
