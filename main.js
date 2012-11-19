@@ -7,7 +7,7 @@ function main(){
 		c.set('Counter', 0);
 	});
 	$.run(function(){
-		time = new Date;
+		time = new Date();
 		if ($.Cache.get('timeCache') != time.getSeconds()) {
 			var tz = document.getElementById('timeZone');
 			tz.innerHTML = time.toLocaleDateString() + '<br/>' + time.toLocaleTimeString();

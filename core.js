@@ -14,16 +14,21 @@ var jsGame = {
 	Cache: {
 		map: [],
 		set: function(key, value){
-			this.map[key] = value
+			this.map[key] = value;
 		},
 		get: function(key){
-			return this.map[key]
+			return this.map[key];
 		},
 		havekey: function(key){
-			return this.get(key) == null ? false : true
+			if(this.get(key)){
+				return false;
+			}
+			else {
+				return true;
+			}
 		},
 		remove: function(key){
-			delete this.map[key]
+			delete this.map[key];
 		},
 		plus: function(key,step){
 			return this.map[key]+=step;
@@ -35,5 +40,5 @@ var jsGame = {
 			setInterval(funtionToRun, 1000 / 30);
 		}
 	}
-}
+};
 
