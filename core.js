@@ -131,7 +131,7 @@ function jsKid(){
 			return (new Date()).toDateString();
 		},
 		sec:function(){
-			return (new Date()).getSecond();
+			return (new Date()).getSeconds();
 		}
 	},
 	this.print_r=function print_r(theObj){
