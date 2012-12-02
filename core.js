@@ -11,10 +11,6 @@ function jsKid() {
 	this.browser = true,
 	//初始化，以函数作为参数
 	this.init = function (args) {
-		if (window.ActiveXObject) {
-			this.browser = false;
-			alert("Not IE !");
-		}
 		gl = new global();
 		args.call();
 	},
@@ -91,17 +87,19 @@ function jsKid() {
 	},
 	//动画入口
 	this.run = function (funtionToRun) {
-		if (this.browser) {
-			//循环体
-			setInterval(funtionToRun, 1000 / 30);
-			// requestAnimationFrame = window.requestAnimationFrame ||
-			// 	window.mozRequestAnimationFrame ||
-			// 	window.webkitRequestAnimationFrame ||
-			// 	window.msRequestAnimationFrame || 
-			// 	window.oRequestAnimationFrame ||
-			// 	function(callback) { setTimeout(callback, 1000 / 60); };
-			// requestAnimationFrame(funtionToRun);
+		//循环体
+		var requestAnimationFrame = window.requestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.msRequestAnimationFrame || 
+		window.oRequestAnimationFrame ||
+		function(callback) { setTimeout(callback, 1000 / 30); };
+		console.log('requestAnimationFrameType:'+requestAnimationFrame);
+		function _worker(){
+			funtionToRun.call();
+			requestAnimationFrame(_worker);
 		}
+		_worker.call();
 	},
 	//Canvas 相关
 	this.Canvas = {
