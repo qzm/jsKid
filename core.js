@@ -94,6 +94,13 @@ function jsKid() {
 		if (this.browser) {
 			//循环体
 			setInterval(funtionToRun, 1000 / 30);
+			// requestAnimationFrame = window.requestAnimationFrame ||
+			// 	window.mozRequestAnimationFrame ||
+			// 	window.webkitRequestAnimationFrame ||
+			// 	window.msRequestAnimationFrame || 
+			// 	window.oRequestAnimationFrame ||
+			// 	function(callback) { setTimeout(callback, 1000 / 60); };
+			// requestAnimationFrame(funtionToRun);
 		}
 	},
 	//Canvas 相关
