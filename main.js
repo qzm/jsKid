@@ -59,7 +59,7 @@ window.addEventListener('load', function main() {
 		ctx.save();
 		ctx.fillStyle = 'red';
 		ctx.fillText('Refresh:'+c.get('reFresh')+' Change:'+c.get('change'), 10, 10);
-		ctx.fillText('FPS:' + parseInt(1000 / (endTime - startTime + 1)), 950, 10);
+		ctx.fillText('FPS:' + parseFloat(1000 / (endTime - startTime + 1)).toFixed(1), 930, 10);
 		ctx.restore();
 		c.plus('reFresh', 1);
 	});

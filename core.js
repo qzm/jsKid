@@ -88,18 +88,19 @@ function jsKid() {
 	//动画入口
 	this.run = function (funtionToRun) {
 		//循环体
-		var requestAnimationFrame = window.requestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.webkitRequestAnimationFrame ||
-		window.msRequestAnimationFrame || 
-		window.oRequestAnimationFrame ||
-		function(callback) { setTimeout(callback, 1000 / 30); };
-		console.log('requestAnimationFrameType:'+requestAnimationFrame);
-		function _worker(){
+		//重写requestAnimationFrame
+		window.requestAnimationFrame = (function () {
+			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback){window.setTimeout(callback,1000/60);};
+		})();
+		//重写cancelAnimationFrame
+		window.cancelAnimationFrame = (function () {
+			return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || window.clearTimeout;
+		})();
+		console.log('requestAnimationFrame Type:'+requestAnimationFrame);
+		(function _worker(){
 			funtionToRun.call();
 			requestAnimationFrame(_worker);
-		}
-		_worker.call();
+		})();
 	},
 	//Canvas 相关
 	this.Canvas = {
