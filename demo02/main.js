@@ -30,7 +30,9 @@ window.addEventListener('load', function main() {
 		ctx.drawImage(img,(_canvas.width-img.width)/2,(_canvas.height-img.height)/2);
 		ctx.lineCap='round';
 		ctx.lineWidth=8;
-		
+		ctx.fillStyle = 'red';
+		ctx.font='30px _sans';
+		ctx.fillText(_data.getHours()+':'+_data.getMinutes()+':'+_data.getSeconds(), 440, 200);
 		ctx.beginPath();
 		ctx.moveTo(center.x,center.y);
 		var sec=(_data.getSeconds()-15)*step;
