@@ -28,7 +28,9 @@ window.addEventListener('load', function main() {
 		_canvas.width=_canvas.width;
 		_data=new Date();
 		ctx.drawImage(img,(_canvas.width-img.width)/2,(_canvas.height-img.height)/2);
+		ctx.lineCap='round';
 		ctx.lineWidth=8;
+		
 		ctx.beginPath();
 		ctx.moveTo(center.x,center.y);
 		var sec=(_data.getSeconds()-15)*step;
