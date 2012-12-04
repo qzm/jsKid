@@ -14,6 +14,11 @@ function jsKid() {
 		gl = new global();
 		args.call();
 	},
+	this.initImg=function(imgSrc){
+		img = new Image();
+		img.src = imgSrc;
+		return img;
+	},
 	//内存缓存
 	this.Cache = {
 		map: [],
@@ -88,11 +93,11 @@ function jsKid() {
 	//动画入口
 	this.run = function (funtionToRun) {
 		//循环体
-		//重写requestAnimationFrame
+		//requestAnimationFrame
 		window.requestAnimationFrame = (function () {
 			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback){window.setTimeout(callback,1000/60);};
 		})();
-		//重写cancelAnimationFrame
+		//cancelAnimationFrame
 		window.cancelAnimationFrame = (function () {
 			return window.cancelAnimationFrame || window.webkitCancelAnimationFrame || window.mozCancelAnimationFrame || window.oCancelAnimationFrame || window.msCancelAnimationFrame || window.clearTimeout;
 		})();

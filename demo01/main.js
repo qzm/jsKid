@@ -14,9 +14,6 @@ window.addEventListener('load', function main() {
 		_canvas.style.position='relative';
 		c.set('xPoint', 0);
 		c.set('yPoint', 0);
-		c.set('reFresh',0);
-		c.set('change',0);
-		ctx.fillStyle = 'blue';
 	});
 
 //**************************************************************************
@@ -26,7 +23,6 @@ window.addEventListener('load', function main() {
 	_canvas.addEventListener('mousemove', function (event) {
 		c.set('xPoint', event.layerX);
 		c.set('yPoint', event.layerY);
-		c.plus('change',1);
 	});
 //**********************************End*************************************
 
@@ -35,9 +31,10 @@ window.addEventListener('load', function main() {
 //**************************************************************************
 //									动画刷新
 //**************************************************************************
-		//清屏
-		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+		//重置Canvas
+		_canvas.width=_canvas.width;
 		//圆心
+		ctx.fillStyle = 'blue';
 		ctx.arc(c.get('xPoint'), c.get('yPoint'), 10, 0, Math.PI * 2, true);
 		ctx.fill();
 		//正方形
@@ -55,12 +52,10 @@ window.addEventListener('load', function main() {
 		ctx.fillText('(' + c.get('xPoint') + ',' + c.get('yPoint') + ')', c.get('xPoint') + 10, c.get('yPoint') - 10);
 //**********************************End*************************************
 		//显示动画帧数、刷新次数、数据变换次数
-		var endTime = new Date();
 		ctx.save();
 		ctx.fillStyle = 'red';
-		ctx.fillText('Refresh:'+c.get('reFresh')+' Change:'+c.get('change'), 10, 10);
-		ctx.fillText('FPS:' + parseFloat(1000 / (endTime - startTime + 1)).toFixed(1), 930, 10);
+		ctx.font='18px _sans';
+		ctx.fillText('FPS:' + parseInt(1000 / (new Date() - startTime + 1)), 920, 20);
 		ctx.restore();
-		c.plus('reFresh', 1);
 	});
 });
