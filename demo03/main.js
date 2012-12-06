@@ -34,8 +34,14 @@ window.addEventListener('load', function main() {
 //**************************************************************************
 		//重置Canvas
 		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
-		//画背景图
+		//显示动画帧数、刷新次数、数据变换次数
+		ctx.save();
+		ctx.fillStyle = 'red';
+		ctx.font='18px _sans';
+		ctx.fillText('FPS:'+parseInt(1000 / (new Date() - startTime + 1)), 920, 20);
 		ctx.restore();
+		
+		//画背景图
 		ctx.drawImage(img,(_canvas.width-800)/2,(_canvas.height-600)/2,800,600);
 		//放大镜
 		ctx.save();
@@ -48,16 +54,12 @@ window.addEventListener('load', function main() {
 		// fillStyle('rgb(255,255,255)');
 		// fill();
 		ctx.closePath();
+		ctx.restore();
 
 
 
 //**********************************End*************************************
-		//显示动画帧数、刷新次数、数据变换次数
-		ctx.save();
-		ctx.fillStyle = 'red';
-		ctx.font='18px _sans';
-		ctx.fillText('FPS:'+parseInt(1000 / (new Date() - startTime + 1)), 920, 20);
-		ctx.restore();
+
 	});
 	function getPoint(r,pi){
 		var point={};
