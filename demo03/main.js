@@ -16,13 +16,17 @@ window.addEventListener('load', function main() {
 			x:_canvas.width/2,
 			y:_canvas.height/2
 		}
-		step=(2*Math.PI)/60;
-		img=$.initImg('img/clock.jpg');
-		ctx.lineCap='round';
-		ctx.lineWidth=8;
-		ctx.fillStyle = 'red';
-		ctx.font='30px _sans';
+		img=$.initImg('img/Koala.jpg');
+		ctx.lineWidth=10;
+
 	});
+
+	//监听鼠标移动事件
+	_canvas.addEventListener('mousemove', function (event) {
+		c.set('xPoint', event.layerX);
+		c.set('yPoint', event.layerY);
+	});
+
 	$.run(function () {
 		var startTime = new Date();
 //**************************************************************************
@@ -31,28 +35,20 @@ window.addEventListener('load', function main() {
 		//重置Canvas
 		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
 		//画背景图
-		ctx.drawImage(img,(_canvas.width-img.width)/2,(_canvas.height-img.height)/2);
-		_data=new Date();
-		ctx.fillText(_data.getHours()+':'+_data.getMinutes()+':'+_data.getSeconds(), 440, 200);
+		ctx.restore();
+		ctx.drawImage(img,(_canvas.width-800)/2,(_canvas.height-600)/2,800,600);
+		//放大镜
+		ctx.save();
 		ctx.beginPath();
-		//秒针
-		ctx.moveTo(center.x,center.y);
-		var sec=(_data.getSeconds()-15)*step;
-		var point=getPoint(300,sec);
-		ctx.lineTo(point.x,point.y);
-		//分针
-		ctx.moveTo(center.x,center.y);
-		var min=(_data.getMinutes()-15)*step;
-		point=getPoint(250,min);
-		ctx.lineTo(point.x,point.y);
-		//时针
-		ctx.moveTo(center.x,center.y);
-		var hour=(_data.getHours()*5-15)*step;
-		point=getPoint(200,hour);
-		ctx.lineTo(point.x,point.y);
-
-		ctx.closePath();
+		ctx.arc(c.get('xPoint'), c.get('yPoint'), 100, 0, Math.PI * 2, true);
+		ctx.clip();
+		ctx.drawImage(img,(_canvas.width-1024)/2,(_canvas.height-768)/2,1024,768);
 		ctx.stroke();
+
+		// fillStyle('rgb(255,255,255)');
+		// fill();
+		ctx.closePath();
+
 
 
 //**********************************End*************************************
@@ -61,10 +57,6 @@ window.addEventListener('load', function main() {
 		ctx.fillStyle = 'red';
 		ctx.font='18px _sans';
 		ctx.fillText('FPS:'+parseInt(1000 / (new Date() - startTime + 1)), 920, 20);
-		ctx.fillText('hour:'+_data.getHours(), 920, 40);
-		ctx.fillText('min :'+_data.getMinutes(), 920, 60);
-		ctx.fillText('sec :'+_data.getSeconds(), 920, 80);
-
 		ctx.restore();
 	});
 	function getPoint(r,pi){
