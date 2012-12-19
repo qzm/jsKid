@@ -32,7 +32,7 @@ window.addEventListener('load', function main() {
 //									动画刷新
 //**************************************************************************
 		//重置Canvas
-		_canvas.width=_canvas.width;
+		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
 		//圆心
 		ctx.fillStyle = 'blue';
 		ctx.arc(c.get('xPoint'), c.get('yPoint'), 10, 0, Math.PI * 2, true);
@@ -55,7 +55,7 @@ window.addEventListener('load', function main() {
 		ctx.save();
 		ctx.fillStyle = 'red';
 		ctx.font='18px _sans';
-		ctx.fillText('FPS:' + parseInt(1000 / (new Date() - startTime + 1)), 920, 20);
+		ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), 920, 20);
 		ctx.restore();
 	});
 });
