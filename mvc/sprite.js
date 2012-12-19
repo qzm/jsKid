@@ -91,6 +91,7 @@ function Sprite($){
 		};
 		this.draw=function(){
 			gl.ctx.save();
+			gl.ctx.globalAlpha=0.6;
 			gl.ctx.beginPath();
 			gl.ctx.fillStyle = fillColor;
 			gl.ctx.arc(x, y, radius, 0, Math.PI * 2, true);

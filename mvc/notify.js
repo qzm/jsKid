@@ -48,9 +48,10 @@ gl={
 		_ctx.save();
 		_ctx.fillStyle = 'red';
 		_ctx.font = '18px 微软雅黑';
-		var fen=window.requestAnimationFrame.toString().split(' ');
-		_ctx.fillText('动画函数:'+fen[1], 5, y);
-		_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
+		// var fen=window.requestAnimationFrame.toString().split(' ');
+		// fen[1]=fen[1].replace('()','');
+		// _ctx.fillText('动画函数:'+fen[1], 5, y);
+		// _ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
 		_ctx.restore();
 		return this;
 	},stratTime:null
@@ -58,8 +59,8 @@ gl={
 window.onload=function(){
 	gl.ctx = $.Canvas.init();
 	gl.canvas = $.Canvas.base();
-	gl.canvas.height=window.innerHeight*0.95||1000;
-	gl.canvas.width =window.innerWidth*0.95||650;
+	gl.canvas.height=window.innerHeight*0.97||1000;
+	gl.canvas.width =window.innerWidth*0.97||650;
 	gl.canvas.style.position='relative';
 };
 $ = new jsKid();
@@ -83,7 +84,7 @@ notify.register('creatDemo4UI', function (args) {
 notify.register('setBallView', function (args) {
 	_model=model.demo4Model;
 	for (var i = 0; i < _model.balls.length; i++) {
-		_model.balls[i].setEnvironment((Math.random()*10-5),(Math.random()*10-5),0, 0, gl.canvas.width, gl.canvas.height);
+		_model.balls[i].setEnvironment((Math.random()*8-4),(Math.random()*8-4),0, 0, gl.canvas.width, gl.canvas.height);
 	}
 	_model=model.demo4Model;
 	$.run(function ($) {
