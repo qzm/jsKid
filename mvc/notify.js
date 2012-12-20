@@ -1,68 +1,54 @@
+window.onload=function(){
 /////////////////////////////////////////////////////////////////////////////
 								// 定义Notify
 /////////////////////////////////////////////////////////////////////////////
-function Notify($) {
-	var notify=this;
-	var map = [];
-	var workerList = [];
-	notify.register = function (notifyName, notifyFunction) {
-		var _notify = {
-			name: notifyName,
-			fun: notifyFunction
+	function Notify($) {
+		var notify=this;
+		var map = [];
+		var workerList = [];
+		notify.register = function (notifyName, notifyFunction) {
+			var _notify = {
+				name: notifyName,
+				fun: notifyFunction
+			};
+			map.push(_notify);
 		};
-		map.push(_notify);
-	};
-	notify.notify = function (notifyName, notifyArgs) {
-		for (var i in map) {
-			if (map[i].name == notifyName) {
-				workerList.push({
-					notify: map[i].fun,
-					name  : map[i].name,
-					args  : notifyArgs
-				});
+		notify.notify = function (notifyName, notifyArgs) {
+			for (var i in map) {
+				if (map[i].name == notifyName) {
+					workerList.push({
+						notify: map[i].fun,
+						name  : map[i].name,
+						args  : notifyArgs
+					});
+				}
 			}
-		}
-	};
-	//多线程跑,加速,防阻塞
-	$.run(function () {
-		var worker = workerList.shift();
-		if (worker) {
-			worker.notify(worker.args);
-		}
-	});
-	$.run(function () {
-		var worker = workerList.shift();
-		if (worker) {
-			worker.notify(worker.args);
-		}
-	});
-	$.run(function () {
-		var worker = workerList.shift();
-		if (worker) {
-			worker.notify(worker.args);
-		}
-	});
-}
+		};
+		//多线程跑,加速,防阻塞
+		$.run(function () {
+			var worker = workerList.shift();
+			if (worker) {
+				worker.notify(worker.args);
+			}
+		});
+		$.run(function () {
+			var worker = workerList.shift();
+			if (worker) {
+				worker.notify(worker.args);
+			}
+		});
+		$.run(function () {
+			var worker = workerList.shift();
+			if (worker) {
+				worker.notify(worker.args);
+			}
+		});
+	}
 /////////////////////////////////////////////////////////////////////////////
 								// 初始化数据
 /////////////////////////////////////////////////////////////////////////////
-//全局变量，方法
-gl={
-	showInfo:function (startTime,x,y) {
-		//显示动画帧数、刷新次数、数据变换次数
-		var _ctx=$.context;
-		_ctx.save();
-		_ctx.fillStyle = 'red';
-		_ctx.font = '18px 微软雅黑';
-		var fen=window.requestAnimationFrame.toString().split(' ');
-		fen[1]=fen[1].replace('()','');
-		_ctx.fillText('动画函数:'+fen[1], 5, y);
-		_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
-		_ctx.restore();
-		return this;
-	},stratTime:null
-};
-window.onload=function(){
+	//初始化游戏核心库
+	var $=new jsKid();
 	//获取Canvas
 	$.context = $.Canvas.init();
 	$.canvas = $.Canvas.base();
@@ -70,19 +56,35 @@ window.onload=function(){
 	$.canvas.width =window.innerWidth*0.97||650;
 	$.canvas.style.position='relative';
 	//初始化数据
-	notify = new Notify($);            //初始化Notify
+	$.notify = new Notify($);            //初始化Notify
 	// im=new Im($);                 //初始化IM
 	$.debug=false;                     //Debug模式(默认开启)，影响$.l()
 	$.model=new Model($);              //初始化Model
 	$.view = new View($);              //初始化View
 	$.contraller = new Contraller($);  //初始化Contraller
 
+	//全局变量，方法
+	gl={
+		showInfo:function (startTime,x,y) {
+			//显示动画帧数、刷新次数、数据变换次数
+			var _ctx=$.context;
+			_ctx.save();
+			_ctx.fillStyle = 'red';
+			_ctx.font = '18px 微软雅黑';
+			var fen=window.requestAnimationFrame.toString().split(' ');
+			fen[1]=fen[1].replace('()','');
+			_ctx.fillText('动画函数:'+fen[1], 5, y);
+			_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
+			_ctx.restore();
+			return this;
+		},stratTime:null
+	};
 
 /////////////////////////////////////////////////////////////////////////////
 								// 注册Notify操作
 /////////////////////////////////////////////////////////////////////////////
 	//创建Demo4 的MVC模式
-	notify.register('creatDemo4UI', function (args) {
+	$.notify.register('creatDemo4UI', function (args) {
 		_args = args || {
 			data: null
 		};
@@ -90,7 +92,7 @@ window.onload=function(){
 		// model.demo4Ctrl.update().refresh();
 	});
 	//设置Demo4 的视图
-	notify.register('setBallView', function (args) {
+	$.notify.register('setBallView', function (args) {
 		_model=$.model.demo4Model;
 		var startTime=new Date();
 		$.context.clearRect(0,0,$.canvas.width,$.canvas.height);
@@ -103,7 +105,7 @@ window.onload=function(){
 		}
 	});
 	// callAlert
-	notify.register('callAlert', function (args) {
+	$.notify.register('callAlert', function (args) {
 		// alert(args);
 		$.l(args);
 	});
@@ -111,5 +113,5 @@ window.onload=function(){
 								// 调用Notify
 /////////////////////////////////////////////////////////////////////////////
 	//创建MVC
-	notify.notify('creatDemo4UI');
+	$.notify.notify('creatDemo4UI');
 };

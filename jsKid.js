@@ -56,9 +56,6 @@ function jsKid() {
 		}
 	};
 	//本地存储
-	window.localStorage=window.localStorage                              ||
-						(window.UserDataStorage && new UserDataStorage())||
-						new cookieStorage();
 	$.Storage = {
 		//设置
 		set: function(key, value) {
@@ -223,8 +220,6 @@ function jsKid() {
 			var ajax=ajaxList.shift();
 			if(ajax){
 				return ajax;
-			// }else{
-				// wailtList.push(worker);
 			}
 		};
 		ajaxpool.free=function(xmlHttpObject){

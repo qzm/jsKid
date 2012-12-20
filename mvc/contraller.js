@@ -14,10 +14,9 @@ function Contraller($) {
 			$.l('balls:'+_model.balls.length);
 		});
 		//动画循环
-		$.loop=$.run(function () {
+		$.run(function () {
 			//绘制视图
-			notify.notify('setBallView');
+			$.notify.notify('setBallView');
 		});
-		//设置视图
 	};
 }

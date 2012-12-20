@@ -49,6 +49,7 @@ function Sprite($){
 			x = x + velocityX;
 			y = y + velocityY;
 		};
+		//转方向
 		ball.turnAround = function (line) {
 			if (line == 'x' || line == 'X') {
 				velocityX = -velocityX;
