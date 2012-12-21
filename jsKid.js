@@ -104,7 +104,7 @@ function jsKid() {
 		return	window.requestAnimationFrame       ||
 				window.webkitRequestAnimationFrame ||
 				//火狐的mozRequestAnimationFrame 没有setTimeout稳定，抖动厉害
-				// window.mozRequestAnimationFrame    ||
+				window.mozRequestAnimationFrame    ||
 				window.oRequestAnimationFrame      ||
 				window.msRequestAnimationFrame     ||
 				function(callback){ setTimeout (callback, 1000 / 60);};
@@ -114,7 +114,7 @@ function jsKid() {
 		return	window.cancelAnimationFrame        ||
 				window.webkitCancelAnimationFrame  ||
 				//火狐的mozRequestAnimationFrame 没有setTimeout稳定，抖动厉害
-				// window.mozCancelAnimationFrame     ||
+				window.mozCancelAnimationFrame     ||
 				window.oCancelAnimationFrame       ||
 				window.msCancelAnimationFrame      ||
 				window.clearTimeout;
