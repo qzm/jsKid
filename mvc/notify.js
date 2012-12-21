@@ -49,19 +49,20 @@ window.onload=function(){
 /////////////////////////////////////////////////////////////////////////////
 	//初始化游戏核心库
 	var $=new jsKid();
-	//获取Canvas
-	$.context = $.Canvas.init();
-	$.canvas = $.Canvas.base();
-	$.canvas.height=window.innerHeight*0.97||1000;
-	$.canvas.width =window.innerWidth*0.97||650;
-	$.canvas.style.position='relative';
 	//初始化数据
-	$.notify = new Notify($);            //初始化Notify
-	// im=new Im($);                 //初始化IM
-	$.debug=false;                     //Debug模式(默认开启)，影响$.l()
+	$.context = $.Canvas.init();       //初始化Context
+	$.canvas = $.Canvas.base();        //获取Canvas对象
+	$.debug=true;                      //Debug模式(默认开启)，影响$.l()
+	$.sprite=new Sprite($);            //精灵类
+	$.notify = new Notify($);          //初始化Notify
 	$.model=new Model($);              //初始化Model
 	$.view = new View($);              //初始化View
 	$.contraller = new Contraller($);  //初始化Contraller
+	$.im=new Im($);                    //初始化IM
+	//设置Canvas，自适应大小
+	$.canvas.height=window.innerHeight*0.97||1000;
+	$.canvas.width =window.innerWidth*0.97||650;
+	$.canvas.style.position='relative';
 
 	//全局变量，方法
 	gl={
@@ -72,12 +73,14 @@ window.onload=function(){
 			_ctx.fillStyle = 'red';
 			_ctx.font = '18px 微软雅黑';
 			var fen=window.requestAnimationFrame.toString().split(' ');
-			fen[1]=fen[1].replace('()','');
+			if(fen[1].indexOf('callback')>=0){
+				fen[1]='setTimeout()';
+			}
 			_ctx.fillText('动画函数:'+fen[1], 5, y);
 			_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
 			_ctx.restore();
 			return this;
-		},stratTime:null
+		}
 	};
 
 /////////////////////////////////////////////////////////////////////////////
@@ -85,15 +88,14 @@ window.onload=function(){
 /////////////////////////////////////////////////////////////////////////////
 	//创建Demo4 的MVC模式
 	$.notify.register('creatDemo4UI', function (args) {
-		_args = args || {
+		var _args = args || {
 			data: null
 		};
 		$.model.demo4Ctrl = new $.contraller.demo4Ctrl(new $.view.demo4View($.model.demo4Model));
-		// model.demo4Ctrl.update().refresh();
 	});
 	//设置Demo4 的视图
 	$.notify.register('setBallView', function (args) {
-		_model=$.model.demo4Model;
+		var _model=$.model.demo4Model;
 		var startTime=new Date();
 		$.context.clearRect(0,0,$.canvas.width,$.canvas.height);
 		for(var i=0;i<_model.balls.length;i++){

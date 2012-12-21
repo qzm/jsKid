@@ -1,10 +1,12 @@
 function jsKid() {
-	var $=this;
 	//下面的$都代表jsKid
+	var $=this;
+	//预定义参数和模块，其他模块可动态添加
 	$.debug=true;
 	$.model = null;
 	$.view = null;
 	$.contraller = null;
+	$.sprite=null;
 	$.notify=null;
 	$.canvas = null;
 	$.context = null;
@@ -101,7 +103,8 @@ function jsKid() {
 	window.requestAnimationFrame = (function() {
 		return	window.requestAnimationFrame       ||
 				window.webkitRequestAnimationFrame ||
-				window.mozRequestAnimationFrame    ||
+				//火狐的mozRequestAnimationFrame 没有setTimeout稳定，抖动厉害
+				// window.mozRequestAnimationFrame    ||
 				window.oRequestAnimationFrame      ||
 				window.msRequestAnimationFrame     ||
 				function(callback){ setTimeout (callback, 1000 / 60);};
@@ -110,7 +113,8 @@ function jsKid() {
 	window.cancelAnimationFrame = (function() {
 		return	window.cancelAnimationFrame        ||
 				window.webkitCancelAnimationFrame  ||
-				window.mozCancelAnimationFrame     ||
+				//火狐的mozRequestAnimationFrame 没有setTimeout稳定，抖动厉害
+				// window.mozCancelAnimationFrame     ||
 				window.oCancelAnimationFrame       ||
 				window.msCancelAnimationFrame      ||
 				window.clearTimeout;
