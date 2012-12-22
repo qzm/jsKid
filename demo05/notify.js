@@ -96,7 +96,9 @@ window.onload=function(){
 		top:$.canvas.height-700*_zoom,
 		img:{
 			wall:$.initImg('img/wall.png'),
-			gress:$.initImg('img/gress.png')
+			gress:$.initImg('img/gress.png'),
+			humanRight:$.initImg('img/humanR.png'),
+			humanLeft:$.initImg('img/humanL.png')
 		},
 		imgLength:0,
 		imgReady:0
