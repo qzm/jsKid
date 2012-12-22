@@ -107,7 +107,7 @@ function jsKid() {
 				window.mozRequestAnimationFrame    ||
 				window.oRequestAnimationFrame      ||
 				window.msRequestAnimationFrame     ||
-				function(callback){ setTimeout (callback, 1000 / 60);};
+				function(callback){ setTimeout (callback, 16);};
 	})();
 	//cancelAnimationFrame
 	window.cancelAnimationFrame = (function() {

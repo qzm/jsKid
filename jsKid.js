@@ -139,6 +139,9 @@ function jsKid() {
 			return document.getElementsByTagName('canvas')[0];
 		}
 	};
+	$.clearScreen=function(){
+
+	};
 	//document 选择封装
 	$.Dom = function(args) {
 		if(args[0]) {

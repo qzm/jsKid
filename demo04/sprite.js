@@ -99,7 +99,7 @@ function Sprite($){
 			_ctx.fillStyle = fillColor;
 			_ctx.arc(x, y, radius, 0, Math.PI * 2, true);
 			_ctx.fill();
-			_ctx.closePath();
+			// _ctx.closePath();
 			_ctx.restore();
 		};
 	};

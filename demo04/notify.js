@@ -13,6 +13,13 @@ window.onload=function(){
 			};
 			map.push(_notify);
 		};
+		notify.unregister = function (notifyName) {
+			for (var i in map) {
+				if (map[i].name == notifyName) {
+					delete map[i];
+				}
+			}
+		};
 		notify.notify = function (notifyName, notifyArgs) {
 			for (var i in map) {
 				if (map[i].name == notifyName) {
@@ -116,4 +123,5 @@ window.onload=function(){
 /////////////////////////////////////////////////////////////////////////////
 	//创建MVC
 	$.notify.notify('creatDemo4UI');
+	$.notify.unregister('unregister');
 };
