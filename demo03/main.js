@@ -3,6 +3,7 @@ window.addEventListener('load', function main() {
 	//调用核心库
 	var $ = new jsKid();
 	//初始化资源
+	var c,dom,sto,ctx,_canvas;
 	$.init(function () {
 		c = $.Cache;
 		dom = $.Dom;

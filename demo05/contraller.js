@@ -7,7 +7,6 @@ function Contraller($) {
 		var human=_model.human;
 		var world=_model.world;
 		window.addEventListener('keydown',function(event){
-			// console.log(event.keyCode);
 			switch(event.keyCode){
 				case 37:     //‘←’键
 				case 65:     //‘A’键
@@ -17,7 +16,7 @@ function Contraller($) {
 					break;
 				case 38:     //‘↑’键
 				case 87:     //‘W’键
-					human.jump();
+					// human.jump();
 					break;
 			}
 		});
@@ -25,16 +24,24 @@ function Contraller($) {
 			human.stop();
 		});
 		//动画循环
-		var startTime;
+		var startTime,ctx=$.context;
 		var _width=$.canvas.width/10,_height=$.canvas.height/20;
 		$.run(function(){
-			var startTime=new Date();
+			startTime=new Date();
 			gl.tran=human.contextStart();
-			$.context.clearRect(0,0,$.canvas.width,$.canvas.height);
+			ctx.clearRect(0,0,$.canvas.width,$.canvas.height);
 			world.draw();
-			gl.showInfo(startTime,$.canvas.width-80,20);
 			human.refresh();
 			human.draw();
+			ctx.save();
+			ctx.beginPath();
+			ctx.font = '100px 微软雅黑';
+			ctx.fillStyle='red';
+			ctx.globalAlpha='0.2';
+			ctx.fillText('未完待续',$.canvas.width/2-200,150);
+			ctx.closePath();
+			ctx.restore();
+			gl.showInfo(startTime,$.canvas.width-80,20);
 		});
 
 	};

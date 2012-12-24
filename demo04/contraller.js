@@ -17,6 +17,8 @@ function Contraller($) {
 		$.run(function () {
 			//绘制视图
 			$.notify.notify('setBallView');
+			// console.log($.randomInt(10,12));
+
 		});
 	};
 	return this;

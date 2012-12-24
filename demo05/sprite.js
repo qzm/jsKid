@@ -1,43 +1,54 @@
 function Sprite($){
-	var sprite=this;
+	var sprite=this,_ctx=$.context;
 	sprite.Human=function(args){
 	var
 		human=this,
-		_args=args||{
+		_args=Object.extend({
 			tall:0,
 			width:0,
 			locationX:0,
 			locationY:0
-
-		},
-		tall=_args.tall*gl.zoom||0,
-		width=_args.width*gl.zoom||0,
-		locationX=_args.locationX||0,
-		locationY=_args.locationY||0,
-		top=(locationY+tall/2)||0,
-		foot=(locationY-tall/2)||0,
-		left=(locationX-width/2)||0,
-		right=(locationX+width/2)||0,
+		},args),
+		tall=_args.tall*gl.zoom,
+		width=_args.width*gl.zoom,
+		locationX=_args.locationX,
+		locationY=_args.locationY,
+		top=(locationY+tall/2),
+		foot=(locationY-tall/2),
+		left=(locationX-width/2),
+		right=(locationX+width/2),
 		velocityValue=15*gl.zoom,
-		impactTop=false,
-		impactLeft=false,
-		impactRight=false,
-		impactFoot=false,
 		velocityX = 0,
 		velocityY = 0,
 		velocityStartY=-55*gl.zoom,
 		acceleration=5*gl.zoom,
 		jumpLock=true,
 		tranLock=true,
-		tmpLocationY=0,
+		tmpLocationY=locationY,
 		contextStart=0,
-		borderWidth=$.canvas.width/5,
+		borderWidth=200,
 		cube=(100*gl.zoom),
-		faceTo='right';
+		faceTo='right',
+		actionStep=0,
+		actionValue=1,
+		lastTime=new Date(),
+		timeout=133,
+		anction={
+			0:{sx:0,sy:0,sw:230,sh:200},
+			1:{sx:230,sy:0,sw:230,sh:200},
+			2:{sx:460,sy:0,sw:230,sh:200},
+			3:{sx:690,sy:0,sw:230,sh:200},
+			4:{sx:0,sy:200,sw:230,sh:200},
+			5:{sx:230,sy:200,sw:230,sh:200},
+			6:{sx:460,sy:200,sw:230,sh:200},
+			7:{sx:690,sy:200,sw:230,sh:200}
+
+		},
+		moveFrame=[0,1,2,3,4,5,6,7];
+
 		human.jump=function(){
 			if(jumpLock){
 				jumpLock=false;
-				tmpLocationY=locationY;
 				velocityY=velocityStartY;
 			}
 			return human;
@@ -58,33 +69,21 @@ function Sprite($){
 			tranLock=true;
 			return human;
 		};
-		human.impact=function(map){
-		var x=Math.floor((locationX+gl.tran)/(100*gl.zoom)),
-			y=Math.floor(locationY/(100*gl.zoom)),
-			impactTop=map[x][y-1]>=0?true:false,
-			impactLeft=map[x-1][y]>=0?true:false,
-			impactRight=map[x+1][y]>=0?true:false,
-			impactFoot=map[x][y+1]>=0?true:false;
+		human.checkImpact=function(){
+
 		};
 		human.border=function(){
 			return {top:top,right:right,foot:foot,left:left};
 		};
 		human.refresh=function(){
+			// human.checkImpact();
 			locationX+=velocityX;
 			locationY+=velocityY;
 			top=(locationY+tall/2);
 			foot=(locationY-tall/2);
 			left=(locationX-width/2);
 			right=(locationX+width/2);
-			if(!jumpLock){
-				velocityY+=acceleration;
-				if(locationY>tmpLocationY){
-					locationY=tmpLocationY;
-					jumpLock=true;
-					velocityY=0;
-				}
-			}
-			// $.l(locationX+contextStart+borderWidth+' '+(map[0].length)*(100*gl.zoom));
+			// velocityY+=acceleration;
 			if(!tranLock){
 				if(locationX+borderWidth>=$.canvas.width){
 					//画布左移 人物往右边边走
@@ -115,42 +114,27 @@ function Sprite($){
 			return contextStart;
 		};
 		human.draw=function(){
-			var _ctx=$.context;
+
+			var _human=anction[moveFrame[actionStep]];
 			_ctx.save();
-			// _ctx.fillStyle = 'grey';
 			_ctx.beginPath();
+			// _ctx.rect(locationX-width/2+5, locationY-tall/2, width, tall);
+			// _ctx.stroke();
+
+			// $.l(actionStep);
 			if(faceTo=='right'){
-				_ctx.drawImage(gl.img.humanRight,locationX-width/2, locationY-tall*3/4, width, tall);
+				_ctx.drawImage(gl.img.humanRight,_human.sx,_human.sy,_human.sw,_human.sh,locationX-width, locationY-tall*3/4, _human.sw*gl.zoom, _human.sh*gl.zoom);
 			}else{
-				_ctx.drawImage(gl.img.humanLeft,locationX-width/2, locationY-tall*3/4, width, tall);
+				_ctx.drawImage(gl.img.humanLeft,_human.sx,_human.sy,_human.sw,_human.sh,locationX-width, locationY-tall*3/4, _human.sw*gl.zoom, _human.sh*gl.zoom);
 			}
-			// _ctx.rect(locationX-width*3/8, locationY-tall*3/4, width*2/4, tall/4);
-			// _ctx.fill();
-			// _ctx.beginPath();
-			// _ctx.rect(locationX-width/2, locationY-tall/2, width*3/4, tall/2);
-			// _ctx.fill();
-			// _ctx.beginPath();
-			// _ctx.rect(locationX-width*7/16, locationY-tall*2/8, width*1/4, tall/2);
-			// _ctx.fill();
-			// _ctx.beginPath();
-			// _ctx.rect(locationX-width*1/16, locationY-tall*2/8, width*1/4, tall/2);
-			// _ctx.fill();
-			// _ctx.beginPath();
-			// _ctx.rect(locationX-width*10/16, locationY-tall*6/16, width*1/16, tall*7/16);
-			// _ctx.fill();
-			// _ctx.beginPath();
-			// _ctx.rect(locationX+width*5/16, locationY-tall*6/16, width*1/16, tall*7/16);
-			// _ctx.fill();
-			// _ctx.closePath();
-			// _ctx.beginPath();
-			// _ctx.fillStyle='lightblue';
-			// _ctx.arc(locationX-width*4/16, locationY-tall*10/16, 5*gl.zoom, 0, Math.PI * 2, true);
-			// _ctx.fill();
-			// _ctx.closePath();
-			// _ctx.beginPath();
-			// _ctx.fillStyle='lightblue';
-			// _ctx.arc(locationX, locationY-tall*10/16, 5*gl.zoom, 0, Math.PI * 2, true);
-			// _ctx.fill();
+			var thisTime=new Date();
+			if(thisTime-lastTime>timeout){
+				lastTime=thisTime;
+				actionStep++;
+			}
+			if(actionStep==moveFrame.length){
+				actionStep=0;
+			}
 			_ctx.closePath();
 			_ctx.restore();
 			return human;
@@ -160,36 +144,42 @@ function Sprite($){
 		world=this;
 		var _width=(100*gl.zoom);
 		world.draw=function(){
-			$.context.save();
+			_ctx.save();
 			//i 列 j 行
 			for (var i = 0; i < map[0].length; i++) {
 				for (var j = 0; j < map.length; j++) {
-					switch(map[j][i]){
-						case -1:
-							// world.drawAir(map[i][j]);
-							break;
-						case 0:
-							// world.drawHuman(map[i][j]);
-							break;
-						case 1:
-							var gress=new sprite.Gress();
-							gress.draw(i,j);
-							break;
-						case 2:
-							var wall=new sprite.Wall();
-							wall.draw(i,j);
-							break;
-						case -3:
-							var water=new sprite.Water();
-							water.draw(i,j);
-							break;
-						default:
-							// world.drawAir(map[i][j]);
+					//屏幕外的就不画了
+					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvas.width){
+						switch(map[j][i]){
+							case -1:
+								// world.drawAir(map[i][j]);
+								break;
+							case 0:
+								// world.drawHuman(map[i][j]);
+								break;
+							case 1:
+								new sprite.Gress().draw(i,j);
+								break;
+							case 2:
+								new sprite.Wall().draw(i,j);
+								break;
+							case -3:
+								new sprite.Water().draw(i,j);
+								break;
+							case 3:
+								new sprite.Firewall().draw(i,j);
+								break;
+							case -4:
+								new sprite.Fire().draw(i,j);
+								break;
+							default:
+								// world.drawAir(map[i][j]);
+						}
 					}
 				}
 			}
 
-			$.context.restore();
+			_ctx.restore();
 		};
 
 
@@ -202,16 +192,11 @@ function Sprite($){
 		gress.draw=function(i,j){
 			//屏幕外的就不画了
 			if((i+1)*width>=gl.tran&&i*width<=gl.tran+$.canvas.width){
-				$.context.save();
-				$.context.beginPath();
-				$.context.drawImage(gl.img.wall,i*width-gl.tran, height*j+gl.top,width, height);
-				$.context.drawImage(gl.img.gress,i*width-gl.tran, height*j+gl.top, width, height/5);
-				// $.context.rect(i*width-gl.tran, height*j+gl.top, width, height);
-				// $.context.fillStyle = gressStyle;
-				// $.context.fill();
-				// $.context.stroke();
-				$.context.beginPath();
-				$.context.restore();
+				_ctx.save();
+				_ctx.beginPath();
+				_ctx.drawImage(gl.img.floor,0,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+				_ctx.beginPath();
+				_ctx.restore();
 			}
 		};
 	};
@@ -219,22 +204,38 @@ function Sprite($){
 	var wall=this,
 		width=(100*gl.zoom),
 		height=(100*gl.zoom);
-		// var wallStyle=img;
 		wall.draw=function(i,j){
-			// img.onload=function(){
-				//屏幕外的就不画了
-				if((i+1)*width>=gl.tran&&i*width<=gl.tran+$.canvas.width){
-					$.context.save();
-					$.context.beginPath();
-					// $.context.rect(i*width-gl.tran, height*j+gl.top, width, height);
-					// $.context.fillStyle = wallStyle;
-					// $.context.fill();
-					// $.context.stroke();
-					$.context.drawImage(gl.img.wall,i*width-gl.tran, height*j+gl.top,width, height);
-					$.context.beginPath();
-					$.context.restore();
-				}
-			// };
+			_ctx.save();
+			_ctx.beginPath();
+			_ctx.drawImage(gl.img.floor,100,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			_ctx.beginPath();
+			_ctx.restore();
+		};
+	};
+	sprite.Fire=function(){
+	var wall=this,
+		width=(100*gl.zoom),
+		height=(100*gl.zoom);
+		wall.draw=function(i,j){
+			_ctx.save();
+			_ctx.beginPath();
+			_ctx.globalAlpha=0.5;
+			_ctx.drawImage(gl.img.floor,100,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			_ctx.beginPath();
+			_ctx.restore();
+		};
+	};
+	sprite.Firewall=function(){
+	var wall=this,
+		width=(100*gl.zoom),
+		height=(100*gl.zoom);
+		wall.draw=function(i,j){
+			_ctx.save();
+			_ctx.beginPath();
+			_ctx.globalAlpha=0.5;
+			_ctx.drawImage(gl.img.floor,100,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			_ctx.beginPath();
+			_ctx.restore();
 		};
 	};
 	sprite.Water=function(){
@@ -243,17 +244,13 @@ function Sprite($){
 		height=(100*gl.zoom),
 		waterStyle='rgb(0,128,192)';
 		water.draw=function(i,j){
-			//屏幕外的就不画了
-			if((i+1)*width>=gl.tran&&i*width<=gl.tran+$.canvas.width){
-				$.context.save();
-				$.context.beginPath();
-				$.context.rect(i*width-gl.tran, height*j+gl.top, width, height);
-				$.context.fillStyle = waterStyle;
-				$.context.fill();
-				// $.context.stroke();
-				$.context.beginPath();
-				$.context.restore();
-			}
+			_ctx.save();
+			_ctx.beginPath();
+			_ctx.rect(i*width-gl.tran, height*j+gl.top, width, height);
+			_ctx.fillStyle = waterStyle;
+			_ctx.fill();
+			_ctx.beginPath();
+			_ctx.restore();
 		};
 	};
 	sprite.BackGround=function(){

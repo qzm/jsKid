@@ -1,6 +1,50 @@
 function jsKid() {
 	//下面的$都代表jsKid
 	var $=this;
+	//拓展系统方法
+	//类的继承 参考：prototype
+	Object.extend = function(des, source) {
+		if(typeof source === 'object') {
+			for(var key in source) {
+				des[key] = source[key];
+			}
+		}
+		return des;
+	};
+	//拓展Object方法
+	Object.extend(Object, {
+		//用字符串表示对象
+		inspect: function(object) {
+			try {
+				if(typeof object === 'undefined')
+					return 'undefined';
+				if(typeof object === 'null')
+					return 'null';
+				return object.inspect ? object.inspect() : object.toString();
+			} catch(e) {
+				if(e instanceof RangeError) return '...';
+				throw e;
+			}
+		},
+		//获得对象中所有的key值
+		keys: function(object) {
+			var keys = [];
+			for(var property in object)
+				keys.push(property);
+			return keys;
+		},
+		//获得对象中所有的value值
+		values: function(object) {
+			var values = [];
+			for(var property in object)
+				values.push(object[property]);
+			return values;
+		},
+		//复制一个对象
+		clone: function(object) {
+			return Object.extend({}, object);
+		}
+	});
 	//预定义参数和模块，其他模块可动态添加
 	$.debug=true;
 	$.model = null;
@@ -10,6 +54,7 @@ function jsKid() {
 	$.notify=null;
 	$.canvas = null;
 	$.context = null;
+	$.e=null;			//事件冒泡
 	// 初始化资源
 	$.version = {
 		info: '命名为jsKid,是觉得这个核心库很不成熟,希望它能想一个孩子一样茁壮成长',
@@ -25,6 +70,15 @@ function jsKid() {
 		args();
 	};
 	$.initImg = function(imgSrc) {
+		var img = new Image();
+		img.src = imgSrc;
+		return img;
+	};
+	$.transform=function(img){
+		img=img.rotate(Math.PI/2);
+		return img;
+	};
+	$.initImgTranX = function(imgSrc) {
 		var img = new Image();
 		img.src = imgSrc;
 		return img;
@@ -56,49 +110,6 @@ function jsKid() {
 		plus: function(key, step) {
 			return $.Cache.map[key] += step;
 		}
-	};
-	//本地存储
-	$.Storage = {
-		//设置
-		set: function(key, value) {
-			window.localStorage[key] = value;
-		},
-		//获得键值
-		get: function(key) {
-			return window.localStorage[key];
-		},
-		//判断时候有键值
-		havekey: function(key) {
-			if(window.localStorage[key]) return true;
-			return false;
-		},
-		//删除键值
-		remove: function(key) {
-			window.localStorage.removeItem(key);
-		},
-		//获取值所对应的键(开销较大,慎用)
-		getKey: function(value) {
-			for(var i = 0; i < window.localStorage; i++) {
-				if(window.localStorage[i] == value) return window.localStorage.key(i);
-			}
-			return null;
-		},
-		//摧毁整个LocalStorage
-		clear: function() {
-			window.localStorage.clear();
-		},
-		//判断值是否相等
-		equal: function(key1, key2) {
-			if(window.localStorage[key1] == window.localStorage[key2]) return true;
-			return false;
-		},
-		//判断值、类型是否相等
-		aEqual: function(key1, key2) {
-			if(window.localStorage[key1] === window.localStorage[key2]) return true;
-			return false;
-		},
-		//原型,用于其他未封装的方法
-		prototype: window.localStorage
 	};
 	window.requestAnimationFrame = (function() {
 		return	window.requestAnimationFrame       ||
@@ -191,6 +202,7 @@ function jsKid() {
 			}catch(e){
 				alert('Ajax异常，可能是本地代码的问题，将JS代码放到服务器上试试');
 			}
+			return ajax;
 		};
 		//封装response方法
 		ajax.response=function(callback,free) {
@@ -213,7 +225,12 @@ function jsKid() {
 					_free.call();
 				}
 			};
+			return ajax;
 		};
+		ajax.base=function(){
+			return $;
+		};
+		return ajax;
 	};
 	//Ajax池封装
 	$.AjaxPool=function(thread){
@@ -224,9 +241,13 @@ function jsKid() {
 			ajaxList[i]=new $.Ajax();
 		}
 		ajaxpool.get=function(worker){
-			var ajax=ajaxList.shift();
-			if(ajax){
-				return ajax;
+			var xmlHttpObject=ajaxList.shift();
+			if(xmlHttpObject){
+				return xmlHttpObject;
+			}else{
+				xmlHttpObject=new $.Ajax();
+				ajaxList.push(xmlHttpObject);
+				return xmlHttpObject;
 			}
 		};
 		ajaxpool.free=function(xmlHttpObject){
@@ -235,53 +256,125 @@ function jsKid() {
 	};
 	//JSON对象重构
 	$.JSON = {
+		//From:jQuery 1.8.3
 		//将字符串格式化成JSON
-		parse: function(_str) {
-			if(_str) {
-				var JSON = window.JSON || null;
-				if(JSON) {
-					//原生支持
-					return JSON.parse(_str);
-				} else {
-					//IE支持
-					return eval("(" + _str + ")");
-				}
-			} else {
-				return null;
+		parse: function(data) {
+			if ( window.JSON && window.JSON.parse ) {
+				return window.JSON.parse( data );
+			}
+			// JSON RegExp
+			var	rvalidchars = /^[\],:{}\s]*$/,
+				rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
+				rvalidescape = /\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g,
+				rvalidtokens = /"[^"\\\r\n]*"|true|false|null|-?(?:\d\d*\.|)\d+(?:[eE][\-+]?\d+|)/g;
+			// Make sure the incoming data is actual JSON
+			// Logic borrowed from http://json.org/json2.js
+			if ( rvalidchars.test( data.replace( rvalidescape, "@" )
+				.replace( rvalidtokens, "]" )
+				.replace( rvalidbraces, "")) ) {
+				return ( new Function( "return " + data ) )();
 			}
 		},
 		//将JSON格式化成字符串
 		stringify: function(json) {
-			if(json) {
-				var JSON = window.JSON || null;
-				if(JSON) {
-					//原生支持
-					return JSON.stringify(json);
-				} else {
-					//IE支持
-					var jsonString = '{',type,value;
-					for(var key in json) {
-						type = typeof(json[key]);
-						switch(type) {
-							case 'object':
-								value=json[key]?$.JSON.stringify(json[key]):'null';
-								jsonString = jsonString + '"' + key + '":' + value + ',';
-								break;
-							case 'string':
-								jsonString = jsonString + '"' + key + '":"' + json[key] + '",';
-								break;
-							default:
-								jsonString = jsonString + '"' + key + '":' + json[key] + ',';
-						}
-					}
-					jsonString=jsonString.substring(0,jsonString.length-1);
-					jsonString+='}';
-					return jsonString;
+			if ( window.JSON && window.JSON.parse ) {
+				var _l='{',_r='}';
+				if(typeof(json)=='Array'){
+					_l='[';_r=']';
 				}
+				var JSON = window.JSON || null;
+				try{
+					if(JSON) {
+						//原生支持
+						return JSON.stringify(json);
+					} else {
+						//IE支持
+						var jsonString = _l,type,value;
+						for(var key in json) {
+							type = typeof(json[key]);
+							switch(type) {
+								case 'object':
+									value=json[key]?$.JSON.stringify(json[key]):'null';
+									jsonString = jsonString + '"' + key + '":' + value + ',';
+									break;
+								case 'string':
+									jsonString = jsonString + '"' + key + '":"' + json[key] + '",';
+									break;
+								default:
+									jsonString = jsonString + '"' + key + '":' + json[key] + ',';
+							}
+						}
+						jsonString=jsonString.substring(0,jsonString.length-1);
+						jsonString+=_r;
+						return jsonString;
+					}
+				}catch(e){
+					$.l('JSON.stringify:'+e.type);
+					return null;
+				}
+
 			} else {
 				return '';
 			}
 		}
 	};
-}
 
+	//扩展系统方法
+
+
+	//将字符串转换成int类型
+	window.String.prototype.toInt=function(){
+		return window.parseInt(this);
+	};
+	//将字符串转换成JSON类型
+	window.String.prototype.toJSON=window.parseJSON=function(str){
+		return $.JSON.parse(str||this);
+	};
+	//将字符串转化成数组
+	window.String.prototype.toArray=window.parseArray=function(str){
+		return Array.prototype.slice.call(str||this);
+	};
+	//判断字符串是否是邮件
+	window.String.prototype.isEmail=window.isEmail=function(str){
+		return (/^[\w_\.]+@[\w_\.]+\.[a-zA-Z]+$/).test(str||this);
+	};
+	//判断字符串是否是手机号码
+	window.String.prototype.isMobile=window.isMobile=function(str){
+		return (/^1[358]\d{9}$/).test(str||this);
+	};
+	//判断字符串是否是身份证号码
+	window.String.prototype.isIdCard=window.isIdCard=function(str){
+		return (/^(\d{15})$|^(\d{17}[\d\*]$)/).test(str||this);
+	};
+	window.String.prototype.isNumber=window.isNumber=function(str){
+		return (/^[1-9]\d+$/).test(str||this);
+	};
+	//随机取出数组中的一个值
+	window.Array.prototype.random = function() {
+		return this[window.Math.floor(Math.random()*this.length)];
+	};
+	//取出数组中最大的一个数
+	window.Array.prototype.max=function() {
+		for(var i=0,_max=this[0];i<this.length;i++){
+			_max=Math.max(_max,this[i]);
+		}
+		return _max;
+	};
+	//取出数组中最小的一个数
+	window.Array.prototype.min=function() {
+		for(var i=0,_min=this[0];i<this.length;i++){
+			_min=Math.min(_min,this[i]);
+		}
+		return _min;
+	};
+	window.Array.prototype.enqueue=window.Array.prototype.push;
+	window.Array.prototype.dequeue=window.Array.prototype.shift;
+	window.Math.distance=function(point1,point2){
+		var	_x=point1.x-point2.x,
+			_y=point2.y-point2.y,
+			_x2=_x*_x,
+			_y2=_y*_y;
+		return Math.sqrt(_x2+_y2);
+	};
+
+}

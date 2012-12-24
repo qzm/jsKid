@@ -63,7 +63,7 @@ window.onload=function(){
 	$.canvas = $.Canvas.base();        //获取Canvas对象
 	$.debug=true;                      //Debug模式(默认开启)，影响$.l()
 	$.sprite=new Sprite($);            //精灵类
-	$.notify = new Notify($);          //初始化Notify
+	notify = new Notify($);          //初始化Notify
 	$.model=new Model($);              //初始化Model
 	$.view = new View($);              //初始化View
 	$.contraller = new Contraller($);  //初始化Contraller
@@ -81,11 +81,11 @@ window.onload=function(){
 			_ctx.save();
 			_ctx.fillStyle = 'red';
 			_ctx.font = '18px 微软雅黑';
-			var fen=window.requestAnimationFrame.toString().split(' ');
-			if(fen[1].indexOf('callback')>=0){
-				fen[1]='setTimeout()';
-			}
-			_ctx.fillText('动画函数:'+fen[1], 5, y);
+			// var fen=window.requestAnimationFrame.toString().split(' ');
+			// if(fen[1].indexOf('callback')>=0){
+			// 	fen[1]='setTimeout()';
+			// }
+			// _ctx.fillText('动画函数:'+fen[1], 5, y);
 			_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), x, y);
 			_ctx.restore();
 			return this;
@@ -95,10 +95,9 @@ window.onload=function(){
 		zoom:_zoom,
 		top:$.canvas.height-700*_zoom,
 		img:{
-			wall:$.initImg('img/wall.png'),
-			gress:$.initImg('img/gress.png'),
-			humanRight:$.initImg('img/humanR.png'),
-			humanLeft:$.initImg('img/humanL.png')
+			humanLeft:$.initImg('img/jianshiLeft.png'),
+			humanRight:$.initImg('img/jianshiRight.png'),
+			floor:$.initImg('img/floor.png')
 		},
 		imgLength:0,
 		imgReady:0
@@ -107,19 +106,23 @@ window.onload=function(){
 	imgOnloadCallBack=function(){
 		gl.imgReady++;
 	};
-	for(var img in gl.img){
+	for(var i ;i<=gl.img.length;i++){
 		gl.imgLength++;
-		gl.img[img].onload=imgOnloadCallBack;
+		gl.img[imgName].onload=imgOnloadCallBack;
 	}
 								// 注册Notify操作
 /////////////////////////////////////////////////////////////////////////////
 	//创建HumanAction 的MVC模式
-	$.notify.register('creatHumanActionUI', function (args) {
-		var _args = args || {
-			data: null
-		};
+	notify.register('creatHumanActionUI', function (args) {
 		$.model.humanActionCtrl = new $.contraller.HumanActionCtrl(new $.view.HumanActionView($.model.humanActionModel));
 	});
+	notify.register('alert', function (args) {
+		var _args = Object.extend({
+			msg: ''
+		},args);
+		alert(_args.msg);
+	});
+
 /////////////////////////////////////////////////////////////////////////////
 								// 调用Notify
 /////////////////////////////////////////////////////////////////////////////
@@ -127,12 +130,12 @@ window.onload=function(){
 		if(gl.imgReady==gl.imgLength){
 			clearInterval(waitForImage);
 			//创建MVC
-			$.notify.notify('creatHumanActionUI');
+			notify.notify('creatHumanActionUI',{aa:'aa',bb:'cc'});
 			//测试用
-			$.notify.notify('test');
+			notify.notify('test');
 		}
 	},100);
-};
 
 //test
 
+};
