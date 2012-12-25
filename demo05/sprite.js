@@ -84,74 +84,50 @@ function Sprite($){
 			console.log('Top');
 		};
 		//human Foot碰撞
-		var impactFoot=function(j,i) {
+		var impactFoot=function() {
 			locationY-=velocityY;
 			velocityY=0;
 			jumpLock=true;
-			// console.log('Foot',j,i);
 		};
 		var checkImpact=function(){
-			var humanLeftTopX,     //左上角x坐标值
-				humanLeftTopY,     //左上角y坐标值
-				humanRightBottomX, //右下角x坐标值
-				humanRightBottomY, //右下角y坐标值
+			var hLeft=locationX-width/2,     //人的左上角x坐标值
+				hTop=locationY-tall/2,      //人的左上角y坐标值
+				hRight=locationX+width/2, //人的右下角x坐标值
+				hBottom=locationY+tall/2,  //人的右下角y坐标值
 
-				cubeLeftTopX,      //左上角x坐标值
-				cubeLeftTopY,      //左上角y坐标值
-				cubeRightBottomX,  //右下角x坐标值
-				cubeRightBottomY;  //右下角y坐标值
+				cLeft,              //方块的左上角x坐标值
+				cTop,              //方块的左上角y坐标值
+				cRight,          //方块的右下角x坐标值
+				cBottom,          //方块的右下角y坐标值
+				_width=(100*gl.zoom),      //方块的宽度
+				_height=(100*gl.zoom);     //方块的高度
 
-			var humanX=locationX-width/2,//50*gl.zoom,
-				humanY=locationY-tall/2,//50*gl.zoom,
-				cubeX,
-				cubeY,
-				_width=(100*gl.zoom);
-				_height=(100*gl.zoom);
 			//遍历地图
 			for (var i = 0; i < map[0].length; i++) {
 				for (var j = 0; j < map.length; j++) {
 					//屏幕外的就不计算了
 					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvas.width){
-						cubeX=i*_width-gl.tran,
-						cubeY=_height*j+gl.top;
+						cLeft=i*_width-gl.tran;              //方块的左上角x坐标值
+						cTop=_height*j+gl.top;              //方块的左上角y坐标值
+						cRight=i*_width-gl.tran+_width;   //方块的右下角x坐标值
+						cBottom=_height*j+gl.top+_height;  //方块的右下角y坐标值
 						//实心的物体
-						// console.log(i,j);
 						if(map[j][i]>=0){
-							//右边碰撞
-							if(
-								cubeX<(humanX+width*gl.zoom)&&
-								(cubeX+width*gl.zoom)>(humanX+width*gl.zoom)&&
-								Math.abs(humanY - cubeY) < Math.min(tall,_height) * gl.zoom
-							) {
+							//方块在人的右边
+							if(cLeft <= hRight&&cRight>hRight&&cTop<=hBottom&&cBottom>=hTop){
 								impactRight();
-								// map[j][i]=0;
-							}
-							//左边碰撞
-							if(
-								(cubeX+100*gl.zoom)>humanX&&
-								cubeX<humanX&&
-								Math.abs(humanY - cubeY) < Math.min(tall,_height) * gl.zoom
-							) {
+								// map[j][i]=1;
+							//方块在人的下面
+							}else if(cTop <= hBottom&&cBottom>hBottom&&cRight>=hLeft&&cLeft<=hRight){
+								impactFoot();
+							//方块在人的左边
+							}else if(cRight >= hLeft&&cLeft<hLeft&&cTop<=hBottom&&cBottom>=hTop){
 								impactLeft();
-								// map[j][i]=0;
-							}
-							//上边碰撞
-							if(
-								(cubeY+100*gl.zoom)>humanY&&
-								cubeY<humanY&&
-								humanX>(width+_width)&&
-								humanX<cubeX+_width
-							){
+								// map[j][i]=-3;
+							//方块在人的上面
+							}else if(cBottom >= hTop&&cTop<hTop&&cRight>=hLeft&&cLeft<=hRight){
 								impactTop();
-							}
-							//下边碰撞
-							if(
-								cubeY<(humanY+10+tall*gl.zoom)&&
-								(cubeY+tall*gl.zoom)>(humanY+tall*gl.zoom)&&
-								humanX>(width+_width)&&
-								humanX<cubeX+_width
-							){
-								impactFoot(j,i);
+								// map[j][i]=3;
 							}
 						}
 
