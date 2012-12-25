@@ -68,24 +68,26 @@ function Sprite($){
 		//human Left碰撞
 		var impactLeft=function() {
 			locationX-=velocityX;
+			locationX-=velocityX;
 			velocityX=0;
-			console.log('Left');
+			// console.log('Left');
 		};
 		//human Right碰撞
 		var impactRight=function() {
 			locationX-=velocityX;
 			velocityX=0;
-			console.log('Right');
+			// console.log('Right');
 		};
 		//human Top碰撞
 		var impactTop=function() {
 			locationY-=velocityY;
 			velocityY=0;
-			console.log('Top');
+			// console.log('Top');
 		};
 		//human Foot碰撞
 		var impactFoot=function() {
 			locationY-=velocityY;
+			// locationY-=velocityY;
 			velocityY=0;
 			jumpLock=true;
 		};
@@ -114,21 +116,30 @@ function Sprite($){
 						//实心的物体
 						if(map[j][i]>=0){
 							//方块在人的右边
-							if(cLeft <= hRight&&cRight>hRight&&cTop<=hBottom&&cBottom>=hTop){
+							if(cLeft < hRight&&cLeft>hLeft&&cTop<hBottom&&cBottom>hTop){
 								impactRight();
-								// map[j][i]=1;
-							//方块在人的下面
-							}else if(cTop <= hBottom&&cBottom>hBottom&&cRight>=hLeft&&cLeft<=hRight){
-								impactFoot();
-							//方块在人的左边
-							}else if(cRight >= hLeft&&cLeft<hLeft&&cTop<=hBottom&&cBottom>=hTop){
-								impactLeft();
-								// map[j][i]=-3;
-							//方块在人的上面
-							}else if(cBottom >= hTop&&cTop<hTop&&cRight>=hLeft&&cLeft<=hRight){
-								impactTop();
-								// map[j][i]=3;
 							}
+							//方块在人的上面
+							if(cBottom > hTop&&cBottom<hBottom&&cRight>hLeft&&cLeft<hRight){
+								impactTop();
+							}
+							//方块在人的下面
+							if(cTop < hBottom+10&&cTop>hTop&&cRight>hLeft&&cLeft<hRight){
+								impactFoot();
+							}
+							//方块在人的左边
+							if(cRight > hLeft&&cRight<hRight&&cTop<hBottom&&cBottom>hTop){
+								impactLeft();
+							}
+							//左边边界
+							if(locationX-width/2<0){
+								impactLeft();
+							}
+							//右边边界
+							if(locationX-gl.tran+width/2>$.canvas.width){
+								impactRight();
+							}
+
 						}
 
 					}
@@ -141,7 +152,13 @@ function Sprite($){
 		};
 		var deah=function() {
 			if(locationY>=$.canvas.height&&live) {
-				notify.notify('alert', {msg:'Died!!!'});
+				notify.notify('alert', {msg:'~~ Game Over ~~'});
+				live=false;
+			}
+		};
+		var win=function() {
+			if((locationX+gl.tran>=100*gl.zoom*(map[0].length-5))&&live) {
+				notify.notify('alert', {msg:'~~ You Win ~~'});
 				live=false;
 			}
 		};
@@ -150,10 +167,9 @@ function Sprite($){
 			locationY+=velocityY;
 			gl.tran=human.contextStart();
 			checkImpact();
-			deah();
-			notify.notify('showDebugInfo', {msg:locationX+' '+locationY, x: $.canvas.width / 2 - 200, y: 150 });
 			velocityY+=acceleration;
-			
+			deah();
+			win();
 			if(!tranLock){
 				if(locationX+borderWidth>=$.canvas.width){
 					//画布左移 人物往右边边走
@@ -178,7 +194,7 @@ function Sprite($){
 					}
 				}
 			}
-			
+
 			return human;
 		};
 		human.contextStart=function(){
@@ -188,22 +204,22 @@ function Sprite($){
 			var _human=anction[moveFrame[actionStep]];
 			_ctx.save();
 			_ctx.beginPath();
-			_ctx.rect(locationX-width/2, locationY-tall/2, width, tall);
-			_ctx.stroke();
+			// _ctx.rect(locationX-width/2, locationY-tall/2, width, tall);
+			// _ctx.stroke();
 
-			// if(faceTo=='right'){
-			// 	_ctx.drawImage(gl.img.humanRight,_human.sx,_human.sy,_human.sw,_human.sh,locationX-4*width/3, locationY-tall, _human.sw*gl.zoom, _human.sh*gl.zoom);
-			// }else{
-			// 	_ctx.drawImage(gl.img.humanLeft,_human.sx,_human.sy,_human.sw,_human.sh,locationX-4*width/3, locationY-tall, _human.sw*gl.zoom, _human.sh*gl.zoom);
-			// }
-			// var thisTime=new Date();
-			// if(thisTime-lastTime>timeout){
-			// 	lastTime=thisTime;
-			// 	actionStep++;
-			// }
-			// if(actionStep==moveFrame.length){
-			// 	actionStep=0;
-			// }
+			if(faceTo=='right'){
+				_ctx.drawImage(gl.img.humanRight,_human.sx,_human.sy,_human.sw,_human.sh,locationX-5*width/3, locationY-tall, _human.sw*gl.zoom*3/4, _human.sh*gl.zoom*3/4);
+			}else{
+				_ctx.drawImage(gl.img.humanLeft,_human.sx,_human.sy,_human.sw,_human.sh,locationX-5*width/3, locationY-tall, _human.sw*gl.zoom*3/4, _human.sh*gl.zoom*3/4);
+			}
+			var thisTime=new Date();
+			if(thisTime-lastTime>timeout){
+				lastTime=thisTime;
+				actionStep++;
+			}
+			if(actionStep==moveFrame.length){
+				actionStep=0;
+			}
 			_ctx.closePath();
 			_ctx.restore();
 			return human;

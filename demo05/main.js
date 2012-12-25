@@ -15,7 +15,7 @@ window.onload=function(){
 	$.canvas.width =window.innerWidth*0.97||650;
 	$.canvas.style.position='relative';
 	//全局变量，方法
-	var _zoom=1;
+	var _zoom=0.8;
 	// var _zoom=$.canvas.height/800;
 	gl={
 
@@ -102,6 +102,7 @@ window.onload=function(){
 			msg: ''
 		},args);
 		alert(_args.msg);
+		window.location.reload();
 	});
 	//测试信息
 	notify.register('test', function (args) {
