@@ -16,7 +16,8 @@ function Contraller($) {
 					break;
 				case 38:     //‘↑’键
 				case 87:     //‘W’键
-					// human.jump();
+					
+					human.jump();
 					break;
 			}
 		});
@@ -28,12 +29,13 @@ function Contraller($) {
 			}else{
 				human.stop();
 			}
+			event=null;
 		});
 
 		$.bind(window,['mouseup','keyup'],function(){
 			human.stop();
 		});
-
+		$.setEvent('mouseup');
 		//动画循环
 		var startTime,ctx=$.context;
 		var _width=$.canvas.width/10,_height=$.canvas.height/20;
@@ -43,8 +45,10 @@ function Contraller($) {
 			world.draw();
 			human.refresh();
 			human.draw();
-			notify.notify('showDebugInfo', {msg: gl.lang.weiwandaixu, x:$.canvas.width/2-200, y:150});
-			notify.notify('showInfo', {startTime:startTime,x:$.canvas.width-80,y:20});
+			if($.debug){
+				// notify.notify('showDebugInfo', {msg: gl.lang.weiwandaixu, x:$.canvas.width/2-200, y:150});
+				notify.notify('showInfo', {startTime:startTime,x:$.canvas.width-80,y:20});
+			}
 		});
 
 	};

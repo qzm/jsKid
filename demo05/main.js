@@ -4,6 +4,7 @@ window.onload=function(){
 								// 预定义变量、常量
 /////////////////////////////////////////////////////////////////////////////
 	// var $=new jsKid();
+	var sysStartTime=new Date();
 	$=new jsKid();
 	//初始化数据
 	$.context = $.Canvas.init();       //初始化Context
@@ -14,8 +15,8 @@ window.onload=function(){
 	$.canvas.width =window.innerWidth*0.97||650;
 	$.canvas.style.position='relative';
 	//全局变量，方法
-	// var _zoom=0.8;
-	var _zoom=$.canvas.height/800;
+	var _zoom=1;
+	// var _zoom=$.canvas.height/800;
 	gl={
 
 		//坐标左右的偏移
@@ -34,7 +35,7 @@ window.onload=function(){
 		lang:{
 			showinfofont:'18px 微软雅黑',		//系统信息文字大小
 			weiwandaixu:'未完待续',				//未完待续文字
-			weiwandaixufont:'100px 微软雅黑',	//未完待续文字大小
+			weiwandaixufont:'50px 微软雅黑',	//未完待续文字大小
 			donghuahanshu:'动画函数：'			//系统信息中动画函数
 		}
 	};
@@ -90,7 +91,8 @@ window.onload=function(){
 		_ctx.font = gl.lang.weiwandaixufont;
 		_ctx.fillStyle='red';
 		_ctx.globalAlpha='0.2';
-		_ctx.fillText(gl.lang.weiwandaixu,_args.x,_args.y);
+		_ctx.fillText(_args.msg,_args.x,_args.y);
+		// _ctx.fillText('挂机：'+Math.ceil((new Date()-sysStartTime)/1000),_args.x,_args.y);
 		_ctx.closePath();
 		_ctx.restore();
 	});

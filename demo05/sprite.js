@@ -9,18 +9,15 @@ function Sprite($){
 			locationX:0,
 			locationY:0
 		},args),
+		live=true;
 		tall=_args.tall*gl.zoom,
 		width=_args.width*gl.zoom,
 		locationX=_args.locationX,
 		locationY=_args.locationY,
-		top=(locationY+tall/2),
-		foot=(locationY-tall/2),
-		left=(locationX-width/2),
-		right=(locationX+width/2),
 		velocityValue=15*gl.zoom,
 		velocityX = 0,
 		velocityY = 0,
-		velocityStartY=-55*gl.zoom,
+		velocityStartY=-50*gl.zoom,
 		acceleration=5*gl.zoom,
 		jumpLock=true,
 		tranLock=true,
@@ -30,7 +27,6 @@ function Sprite($){
 		cube=(100*gl.zoom),
 		faceTo='right',
 		actionStep=0,
-		actionValue=1,
 		lastTime=new Date(),
 		timeout=133,
 		anction={
@@ -69,22 +65,119 @@ function Sprite($){
 			tranLock=true;
 			return human;
 		};
-		human.checkImpact=function(){
+		//human Left碰撞
+		var impactLeft=function() {
+			locationX-=velocityX;
+			velocityX=0;
+			console.log('Left');
+		};
+		//human Right碰撞
+		var impactRight=function() {
+			locationX-=velocityX;
+			velocityX=0;
+			console.log('Right');
+		};
+		//human Top碰撞
+		var impactTop=function() {
+			locationY-=velocityY;
+			velocityY=0;
+			console.log('Top');
+		};
+		//human Foot碰撞
+		var impactFoot=function(j,i) {
+			locationY-=velocityY;
+			velocityY=0;
+			jumpLock=true;
+			// console.log('Foot',j,i);
+		};
+		var checkImpact=function(){
+			var humanLeftTopX,     //左上角x坐标值
+				humanLeftTopY,     //左上角y坐标值
+				humanRightBottomX, //右下角x坐标值
+				humanRightBottomY, //右下角y坐标值
+
+				cubeLeftTopX,      //左上角x坐标值
+				cubeLeftTopY,      //左上角y坐标值
+				cubeRightBottomX,  //右下角x坐标值
+				cubeRightBottomY;  //右下角y坐标值
+
+			var humanX=locationX-width/2,//50*gl.zoom,
+				humanY=locationY-tall/2,//50*gl.zoom,
+				cubeX,
+				cubeY,
+				_width=(100*gl.zoom);
+				_height=(100*gl.zoom);
+			//遍历地图
+			for (var i = 0; i < map[0].length; i++) {
+				for (var j = 0; j < map.length; j++) {
+					//屏幕外的就不计算了
+					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvas.width){
+						cubeX=i*_width-gl.tran,
+						cubeY=_height*j+gl.top;
+						//实心的物体
+						// console.log(i,j);
+						if(map[j][i]>=0){
+							//右边碰撞
+							if(
+								cubeX<(humanX+width*gl.zoom)&&
+								(cubeX+width*gl.zoom)>(humanX+width*gl.zoom)&&
+								Math.abs(humanY - cubeY) < Math.min(tall,_height) * gl.zoom
+							) {
+								impactRight();
+								// map[j][i]=0;
+							}
+							//左边碰撞
+							if(
+								(cubeX+100*gl.zoom)>humanX&&
+								cubeX<humanX&&
+								Math.abs(humanY - cubeY) < Math.min(tall,_height) * gl.zoom
+							) {
+								impactLeft();
+								// map[j][i]=0;
+							}
+							//上边碰撞
+							if(
+								(cubeY+100*gl.zoom)>humanY&&
+								cubeY<humanY&&
+								humanX>(width+_width)&&
+								humanX<cubeX+_width
+							){
+								impactTop();
+							}
+							//下边碰撞
+							if(
+								cubeY<(humanY+10+tall*gl.zoom)&&
+								(cubeY+tall*gl.zoom)>(humanY+tall*gl.zoom)&&
+								humanX>(width+_width)&&
+								humanX<cubeX+_width
+							){
+								impactFoot(j,i);
+							}
+						}
+
+					}
+				}
+			}
 
 		};
 		human.border=function(){
 			return {top:top,right:right,foot:foot,left:left};
 		};
+		var deah=function() {
+			if(locationY>=$.canvas.height&&live) {
+				notify.notify('alert', {msg:'Died!!!'});
+				live=false;
+			}
+		};
 		human.refresh=function(){
-			// human.checkImpact();
-			gl.tran=human.contextStart();
 			locationX+=velocityX;
 			locationY+=velocityY;
-			top=(locationY+tall/2);
-			foot=(locationY-tall/2);
-			left=(locationX-width/2);
-			right=(locationX+width/2);
-			// velocityY+=acceleration;
+			gl.tran=human.contextStart();
+			checkImpact();
+			deah();
+			notify.notify('showDebugInfo', {msg:locationX+' '+locationY, x: $.canvas.width / 2 - 200, y: 150 });
+			velocityY+=acceleration;
+			
 			if(!tranLock){
 				if(locationX+borderWidth>=$.canvas.width){
 					//画布左移 人物往右边边走
@@ -109,6 +202,7 @@ function Sprite($){
 					}
 				}
 			}
+			
 			return human;
 		};
 		human.contextStart=function(){
@@ -118,23 +212,22 @@ function Sprite($){
 			var _human=anction[moveFrame[actionStep]];
 			_ctx.save();
 			_ctx.beginPath();
-			// _ctx.rect(locationX-width/2+5, locationY-tall/2, width, tall);
-			// _ctx.stroke();
+			_ctx.rect(locationX-width/2, locationY-tall/2, width, tall);
+			_ctx.stroke();
 
-			// $.l(actionStep);
-			if(faceTo=='right'){
-				_ctx.drawImage(gl.img.humanRight,_human.sx,_human.sy,_human.sw,_human.sh,locationX-width, locationY-tall*3/4, _human.sw*gl.zoom, _human.sh*gl.zoom);
-			}else{
-				_ctx.drawImage(gl.img.humanLeft,_human.sx,_human.sy,_human.sw,_human.sh,locationX-width, locationY-tall*3/4, _human.sw*gl.zoom, _human.sh*gl.zoom);
-			}
-			var thisTime=new Date();
-			if(thisTime-lastTime>timeout){
-				lastTime=thisTime;
-				actionStep++;
-			}
-			if(actionStep==moveFrame.length){
-				actionStep=0;
-			}
+			// if(faceTo=='right'){
+			// 	_ctx.drawImage(gl.img.humanRight,_human.sx,_human.sy,_human.sw,_human.sh,locationX-4*width/3, locationY-tall, _human.sw*gl.zoom, _human.sh*gl.zoom);
+			// }else{
+			// 	_ctx.drawImage(gl.img.humanLeft,_human.sx,_human.sy,_human.sw,_human.sh,locationX-4*width/3, locationY-tall, _human.sw*gl.zoom, _human.sh*gl.zoom);
+			// }
+			// var thisTime=new Date();
+			// if(thisTime-lastTime>timeout){
+			// 	lastTime=thisTime;
+			// 	actionStep++;
+			// }
+			// if(actionStep==moveFrame.length){
+			// 	actionStep=0;
+			// }
 			_ctx.closePath();
 			_ctx.restore();
 			return human;
