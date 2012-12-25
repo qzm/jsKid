@@ -2,18 +2,16 @@ function jsKid() {
 	//下面的$都代表jsKid
 	var $=this;
 	//拓展系统方法
-	//类的继承 参考：prototype
+	//类的继承 参考：Prototype JavaScript framework, version 1.7.1
 	Object.extend = function(des, source) {
-		if(typeof source === 'object') {
-			for(var key in source) {
-				des[key] = source[key];
-			}
+		for(var key in source) {
+			des[key] = source[key];
 		}
 		return des;
 	};
 	//拓展Object方法
 	Object.extend(Object, {
-		//用字符串表示对象
+		//用字符串表示对象  参考：Prototype JavaScript framework, version 1.7.1
 		inspect: function(object) {
 			try {
 				if(typeof object === 'undefined')
@@ -45,24 +43,17 @@ function jsKid() {
 			return Object.extend({}, object);
 		}
 	});
+
+
 	//预定义参数和模块，其他模块可动态添加
 	$.debug=true;
 	$.model = null;
 	$.view = null;
 	$.contraller = null;
 	$.sprite=null;
-	$.notify=null;
 	$.canvas = null;
 	$.context = null;
-	$.e=null;			//事件冒泡
-	// 初始化资源
-	$.version = {
-		info: '命名为jsKid,是觉得这个核心库很不成熟,希望它能想一个孩子一样茁壮成长',
-		name: 'jsKid',
-		version: '1.0',
-		author: 'QZM',
-		eMail: 'q.hn@163.com'
-	};
+	$.event=[];
 	//IE标示
 	$.browser = true;
 	//初始化,以函数作为参数
@@ -74,18 +65,9 @@ function jsKid() {
 		img.src = imgSrc;
 		return img;
 	};
-	$.transform=function(img){
-		img=img.rotate(Math.PI/2);
-		return img;
-	};
-	$.initImgTranX = function(imgSrc) {
-		var img = new Image();
-		img.src = imgSrc;
-		return img;
-	};
 	//内存缓存,防止破坏命名空间
 	$.Cache = {
-		map: [],
+		map: {},
 		//设置缓存
 		set: function(key, value) {
 			$.Cache.map[key] = value;
@@ -150,9 +132,6 @@ function jsKid() {
 			return document.getElementsByTagName('canvas')[0];
 		}
 	};
-	$.clearScreen=function(){
-
-	};
 	//document 选择封装
 	$.Dom = function(args) {
 		if(args[0]) {
@@ -175,6 +154,49 @@ function jsKid() {
 		}
 		return null;
 	};
+	//绑定事件
+	//$.bind(window,['keydown','mousedown'],callback);
+	$.bind=function(obj,events,callback){
+		var i;
+		$.event.push({obj:obj,events:events,callback:callback});
+		//正常浏览器兼容
+		if(obj.addEventListener){
+			if(typeof events==='string'){
+				obj.addEventListener(events,callback);
+			}else if(typeof events==='object'){
+				for(i in events){
+					obj.addEventListener(events[i],callback);
+				}
+			}
+		//IE兼容
+		}else if(obj.attachEvent){
+			if(typeof events==='string'){
+				obj.attachEvent('on'+events,callback);
+			}else if(typeof events==='object'){
+				for(i in events){
+					obj.attachEvent('on'+events[i],callback);
+				}
+			}
+		}
+	};
+	//触发绑定的事件
+	//$.setEvent('keydown',{keyCode:37});
+	$.setEvent=function(event,args){
+		var _args=args||null;
+		var events=[];
+		var callbacks=[];
+		for(var i in $.event){
+			if(typeof $.event[i].events!=='undefined'){
+				events=events.concat($.event[i].events);
+				callbacks=callbacks.concat($.event[i].callback);
+			}
+		}
+		for (var j = 0; j < events.length; j++) {
+			if(events[j]===event){
+				callbacks[j](args);
+			}
+		}
+	};
 	//log日志
 	$.l=function(msg){
 		if(console&&$.debug){
@@ -192,15 +214,17 @@ function jsKid() {
 		})();
 		//封装send方法
 		ajax.send=function(args) {
-			var method=args.method||'GET';
-			var url   =args.url   ||'';
-			var async =args.async ||true;
-			var data  =args.data  ||null;
+			var _args=Object.extend({
+				method:'GET',
+				url:'',
+				async:true,
+				data:null
+			},args);
 			try{
-				xmlhttp.open(method, url, async);
-				xmlhttp.send(data);
+				xmlhttp.open(_args.method, _args.url, _args.async);
+				xmlhttp.send(_args.data);
 			}catch(e){
-				alert('Ajax异常，可能是本地代码的问题，将JS代码放到服务器上试试');
+				alert('ajaxError');
 			}
 			return ajax;
 		};
@@ -234,9 +258,9 @@ function jsKid() {
 	};
 	//Ajax池封装
 	$.AjaxPool=function(thread){
-		var ajaxpool=this;
-		var ajaxList=[];
-		var waitList=[];
+		var ajaxpool=this,
+			ajaxList=[],
+			waitList=[];
 		for(var i=0;i<thread;i++){
 			ajaxList[i]=new $.Ajax();
 		}
@@ -256,7 +280,7 @@ function jsKid() {
 	};
 	//JSON对象重构
 	$.JSON = {
-		//From:jQuery 1.8.3
+		//参考：  jQuery JavaScript Library v1.8.3
 		//将字符串格式化成JSON
 		parse: function(data) {
 			if ( window.JSON && window.JSON.parse ) {

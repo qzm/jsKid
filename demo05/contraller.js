@@ -6,7 +6,7 @@ function Contraller($) {
 		var _model = view.model;
 		var human=_model.human;
 		var world=_model.world;
-		window.addEventListener('keydown',function(event){
+		$.bind(window,'keydown',function(event){
 			switch(event.keyCode){
 				case 37:     //‘←’键
 				case 65:     //‘A’键
@@ -20,28 +20,31 @@ function Contraller($) {
 					break;
 			}
 		});
-		window.addEventListener('keyup',function(event){
+		$.bind(window,'mousedown',function(event){
+			if(event.clientX>$.canvas.width*3/4){
+				human.move(39);
+			}else if(event.clientX<$.canvas.width*1/4){
+				human.move(37);
+			}else{
+				human.stop();
+			}
+		});
+
+		$.bind(window,['mouseup','keyup'],function(){
 			human.stop();
 		});
+
 		//动画循环
 		var startTime,ctx=$.context;
 		var _width=$.canvas.width/10,_height=$.canvas.height/20;
 		$.run(function(){
 			startTime=new Date();
-			gl.tran=human.contextStart();
 			ctx.clearRect(0,0,$.canvas.width,$.canvas.height);
 			world.draw();
 			human.refresh();
 			human.draw();
-			ctx.save();
-			ctx.beginPath();
-			ctx.font = '100px 微软雅黑';
-			ctx.fillStyle='red';
-			ctx.globalAlpha='0.2';
-			ctx.fillText('未完待续',$.canvas.width/2-200,150);
-			ctx.closePath();
-			ctx.restore();
-			gl.showInfo(startTime,$.canvas.width-80,20);
+			notify.notify('showDebugInfo', {msg: gl.lang.weiwandaixu, x:$.canvas.width/2-200, y:150});
+			notify.notify('showInfo', {startTime:startTime,x:$.canvas.width-80,y:20});
 		});
 
 	};

@@ -77,6 +77,7 @@ function Sprite($){
 		};
 		human.refresh=function(){
 			// human.checkImpact();
+			gl.tran=human.contextStart();
 			locationX+=velocityX;
 			locationY+=velocityY;
 			top=(locationY+tall/2);
@@ -114,7 +115,6 @@ function Sprite($){
 			return contextStart;
 		};
 		human.draw=function(){
-
 			var _human=anction[moveFrame[actionStep]];
 			_ctx.save();
 			_ctx.beginPath();
@@ -141,8 +141,8 @@ function Sprite($){
 		};
 	};
 	sprite.World=function(map){
-		world=this;
-		var _width=(100*gl.zoom);
+		var world=this,
+			_width=(100*gl.zoom);
 		world.draw=function(){
 			_ctx.save();
 			//i 列 j 行
@@ -178,32 +178,26 @@ function Sprite($){
 					}
 				}
 			}
-
 			_ctx.restore();
 		};
-
-
 	};
 	sprite.Gress=function(){
-	var gress=this,
-		width=(100*gl.zoom),
-		height=(100*gl.zoom),
-		gressStyle='green';
+		var gress=this,
+			width=(100*gl.zoom),
+			height=(100*gl.zoom),
+			gressStyle='green';
 		gress.draw=function(i,j){
-			//屏幕外的就不画了
-			if((i+1)*width>=gl.tran&&i*width<=gl.tran+$.canvas.width){
-				_ctx.save();
-				_ctx.beginPath();
-				_ctx.drawImage(gl.img.floor,0,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
-				_ctx.beginPath();
-				_ctx.restore();
-			}
+			_ctx.save();
+			_ctx.beginPath();
+			_ctx.drawImage(gl.img.floor,0,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			_ctx.beginPath();
+			_ctx.restore();
 		};
 	};
 	sprite.Wall=function(){
-	var wall=this,
-		width=(100*gl.zoom),
-		height=(100*gl.zoom);
+		var wall=this,
+			width=(100*gl.zoom),
+			height=(100*gl.zoom);
 		wall.draw=function(i,j){
 			_ctx.save();
 			_ctx.beginPath();
@@ -213,22 +207,22 @@ function Sprite($){
 		};
 	};
 	sprite.Fire=function(){
-	var wall=this,
-		width=(100*gl.zoom),
-		height=(100*gl.zoom);
+		var wall=this,
+			width=(100*gl.zoom),
+			height=(100*gl.zoom);
 		wall.draw=function(i,j){
 			_ctx.save();
 			_ctx.beginPath();
-			_ctx.globalAlpha=0.5;
+			_ctx.globalAlpha=0.1;
 			_ctx.drawImage(gl.img.floor,100,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
 			_ctx.beginPath();
 			_ctx.restore();
 		};
 	};
 	sprite.Firewall=function(){
-	var wall=this,
-		width=(100*gl.zoom),
-		height=(100*gl.zoom);
+		var wall=this,
+			width=(100*gl.zoom),
+			height=(100*gl.zoom);
 		wall.draw=function(i,j){
 			_ctx.save();
 			_ctx.beginPath();
@@ -239,10 +233,10 @@ function Sprite($){
 		};
 	};
 	sprite.Water=function(){
-	var water=this,
-		width=(100*gl.zoom),
-		height=(100*gl.zoom),
-		waterStyle='rgb(0,128,192)';
+		var water=this,
+			width=(100*gl.zoom),
+			height=(100*gl.zoom),
+			waterStyle='rgb(0,128,192)';
 		water.draw=function(i,j){
 			_ctx.save();
 			_ctx.beginPath();
