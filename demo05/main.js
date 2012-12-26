@@ -27,7 +27,8 @@ window.onload=function(){
 		img:{
 			humanLeft:$.initImg('img/jianshiLeft.png'),
 			humanRight:$.initImg('img/jianshiRight.png'),
-			floor:$.initImg('img/floor.png')
+			floor:$.initImg('img/floor.png'),
+			logo:$.initImg('img/html5.jpg')
 		},
 		imgLength:0,		//总长度
 		imgReady:0,			//已经就绪的
@@ -110,6 +111,19 @@ window.onload=function(){
 			type: 'test'
 		},args);
 		console.log(args);
+	});
+	//画logo
+	notify.register('drawLogo', function (args) {
+		var _args = Object.extend({
+			data: null
+		},args),_ctx=$.context;
+		var logo=$.initImg('img/html5.jpg');
+		_ctx.save();
+		_ctx.beginPath();
+		_ctx.globalAlpha=0.3;
+		_ctx.drawImage(logo,0,0,500,437,($.canvas.width-500)/2,($.canvas.height-437)/2,500, 437);
+		_ctx.closePath();
+		_ctx.restore();
 	});
 /////////////////////////////////////////////////////////////////////////////
 								// 调用Notify

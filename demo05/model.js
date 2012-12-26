@@ -4,9 +4,8 @@ function Model($){
 		humanActionCtrl:null,			//demo4 的控制器
 		humanActionModel:{
 			human:null,
-			cube:[],
 			world:null,
-			floor:null
+			logo:null
 		}
 	};
 	return model;

@@ -6,6 +6,7 @@ function Contraller($) {
 		var _model = view.model;
 		var human=_model.human;
 		var world=_model.world;
+		var logo=_model.logo;
 		$.bind(window,'keydown',function(event){
 			switch(event.keyCode){
 				case 37:     //‘←’键
@@ -16,7 +17,6 @@ function Contraller($) {
 					break;
 				case 38:     //‘↑’键
 				case 87:     //‘W’键
-					
 					human.jump();
 					break;
 			}
@@ -42,6 +42,7 @@ function Contraller($) {
 		$.run(function(){
 			startTime=new Date();
 			ctx.clearRect(0,0,$.canvas.width,$.canvas.height);
+			logo.draw();
 			world.draw();
 			human.refresh();
 			human.draw();
@@ -50,7 +51,6 @@ function Contraller($) {
 				notify.notify('showInfo', {startTime:startTime,x:$.canvas.width-80,y:20});
 			}
 		});
-
 	};
 	return this;
 }

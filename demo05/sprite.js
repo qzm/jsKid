@@ -336,7 +336,18 @@ function Sprite($){
 			_ctx.restore();
 		};
 	};
-	sprite.BackGround=function(){
-		var background=this;
+	sprite.Logo=function(){
+		var background=this,
+			width=500,
+			height=437,
+			img=gl.img.logo;
+		background.draw=function() {
+			_ctx.save();
+			_ctx.beginPath();
+			// _ctx.globalAlpha=0.7;
+			_ctx.drawImage(img,0,0,width,height,0,0,width/5, height/5);
+			_ctx.closePath();
+			_ctx.restore();
+		};
 	};
 }
