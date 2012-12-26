@@ -275,6 +275,8 @@ function Sprite($){
 			_ctx.save();
 			_ctx.beginPath();
 			_ctx.drawImage(gl.img.floor,0,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			// _ctx.rect(i*width-gl.tran, height*j+gl.top,width, height);
+			// _ctx.stroke();
 			_ctx.beginPath();
 			_ctx.restore();
 		};
@@ -287,6 +289,8 @@ function Sprite($){
 			_ctx.save();
 			_ctx.beginPath();
 			_ctx.drawImage(gl.img.floor,100,0,100,100,i*width-gl.tran, height*j+gl.top,width, height);
+			// _ctx.rect(i*width-gl.tran, height*j+gl.top,width, height);
+			// _ctx.stroke();
 			_ctx.beginPath();
 			_ctx.restore();
 		};
