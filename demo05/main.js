@@ -11,19 +11,19 @@ window.onload=function(){
 	$.canvas = $.Canvas.base();        //获取Canvas对象
 	$.debug=true;                      //Debug模式(默认开启)，影响$.l()
 	//设置Canvas，自适应大小
-	$.canvas.height=window.innerHeight*0.97||1000;
-	$.canvas.width =window.innerWidth*0.97||650;
+	$.canvasHeight=$.canvas.height=window.innerHeight*0.97||1000;
+	$.canvasWidth=$.canvas.width =window.innerWidth*0.97||650;
 	$.canvas.style.position='relative';
 	//全局变量，方法
 	var _zoom=0.8;
-	// var _zoom=$.canvas.height/800;
+	// var _zoom=$.canvasHeight/800;
 	gl={
 
 		//坐标左右的偏移
 		tran:0,
 		zoom:_zoom,
 		//计算地图上下偏移位置
-		top:$.canvas.height-1000*_zoom,
+		top:$.canvasHeight-1000*_zoom,
 		img:{
 			humanLeft:$.initImg('img/jianshiLeft.png'),
 			humanRight:$.initImg('img/jianshiRight.png'),
@@ -70,14 +70,14 @@ window.onload=function(){
 	notify.register('showInfo', function (args) {
 		var _args = Object.extend({
 			startTime:0,
-			x:$.canvas.width-80,
+			x:$.canvasWidth-80,
 			y:20
 		},args),_ctx=$.context;
 		//显示动画帧数、刷新次数、数据变换次数
 		_ctx.save();
 		_ctx.fillStyle = 'red';
 		_ctx.font = gl.lang.showinfofont;
-		_ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - _args.startTime + 1)), _args.x, _args.y);
+		_ctx.fillText('FPS:' + ((1000 / (new Date() - _args.startTime + 1))>>0), _args.x, _args.y);
 		_ctx.restore();
 	});
 	//显示调试信息
@@ -121,7 +121,7 @@ window.onload=function(){
 		_ctx.save();
 		_ctx.beginPath();
 		_ctx.globalAlpha=0.3;
-		_ctx.drawImage(logo,0,0,500,437,($.canvas.width-500)/2,($.canvas.height-437)/2,500, 437);
+		_ctx.drawImage(logo,0,0,500,437,($.canvasWidth-500)/2,($.canvasHeight-437)/2,500, 437);
 		_ctx.closePath();
 		_ctx.restore();
 	});
@@ -141,5 +141,5 @@ window.onload=function(){
 	},100);
 
 //test
-
+	
 };

@@ -1,27 +1,25 @@
 //程序入口
-window.addEventListener('load', function main() {
-	//调用核心库
-	var $ = new jsKid();
+window.onload=function main() {
 	//初始化资源
-	var c,dom,sto,ctx,_canvas;
-	$.init(function () {
-		c = $.Cache;
-		dom = $.Dom;
-		sto = $.Storage;
-		ctx = $.Canvas.init();
-		_canvas = $.Canvas.base();
-		_canvas.height = 700;
-		_canvas.width = 1000;
-		_canvas.style.position='relative';
-		c.set('xPoint', 0);
+	var $ = new jsKid(),
+		c = $.Cache,
+		dom = $.Dom,
+		ctx = $.Canvas.init(),
+		canvas = $.Canvas.base();
+
+		canvas.height = 700,
+		canvas.width = 1000,
+		canvasHeight=canvas.height,
+		canvasWidth=canvas.width,
+		canvas.style.position='relative',
+		c.set('xPoint', 0),
 		c.set('yPoint', 0);
-	});
 
 //**************************************************************************
 //								动画数据更新
 //**************************************************************************
 	//监听鼠标移动事件
-	_canvas.addEventListener('mousemove', function (event) {
+	$.bind(canvas,'mousemove',function (evevt){
 		c.set('xPoint', event.layerX);
 		c.set('yPoint', event.layerY);
 	});
@@ -33,7 +31,7 @@ window.addEventListener('load', function main() {
 //									动画刷新
 //**************************************************************************
 		//重置Canvas
-		ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 		//圆心
 		ctx.fillStyle = 'blue';
 		ctx.arc(c.get('xPoint'), c.get('yPoint'), 10, 0, Math.PI * 2, true);
@@ -43,10 +41,10 @@ window.addEventListener('load', function main() {
 		//X轴
 		ctx.beginPath();
 		ctx.moveTo(0, c.get('yPoint'));
-		ctx.lineTo(_canvas.width, c.get('yPoint'));
+		ctx.lineTo(canvasWidth, c.get('yPoint'));
 		//Y轴
 		ctx.moveTo(c.get('xPoint'), 0);
-		ctx.lineTo(c.get('xPoint'), _canvas.height);
+		ctx.lineTo(c.get('xPoint'), canvasHeight);
 		ctx.closePath();
 		ctx.stroke();
 		//坐标点
@@ -56,7 +54,7 @@ window.addEventListener('load', function main() {
 		ctx.save();
 		ctx.fillStyle = 'red';
 		ctx.font='18px _sans';
-		ctx.fillText('FPS:' + Math.ceil(1000 / (new Date() - startTime + 1)), 920, 20);
+		ctx.fillText('FPS:' + (1000 / (new Date() - startTime + 1))>>0, 920, 20);
 		ctx.restore();
 	});
-});
+};

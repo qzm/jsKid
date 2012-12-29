@@ -22,9 +22,9 @@ function Contraller($) {
 			}
 		});
 		$.bind(window,'mousedown',function(event){
-			if(event.clientX>$.canvas.width*3/4){
+			if(event.clientX>$.canvasWidth*3/4){
 				human.move(39);
-			}else if(event.clientX<$.canvas.width*1/4){
+			}else if(event.clientX<$.canvasWidth*1/4){
 				human.move(37);
 			}else{
 				human.stop();
@@ -38,17 +38,16 @@ function Contraller($) {
 		$.setEvent('mouseup');
 		//动画循环
 		var startTime,ctx=$.context;
-		var _width=$.canvas.width/10,_height=$.canvas.height/20;
+		var _width=$.canvasWidth/10,_height=$.canvasHeight/20;
 		$.run(function(){
 			startTime=new Date();
-			ctx.clearRect(0,0,$.canvas.width,$.canvas.height);
+			ctx.clearRect(0,0,$.canvasWidth,$.canvasHeight);
 			logo.draw();
 			world.draw();
 			human.refresh();
 			human.draw();
 			if($.debug){
-				// notify.notify('showDebugInfo', {msg: gl.lang.weiwandaixu, x:$.canvas.width/2-200, y:150});
-				notify.notify('showInfo', {startTime:startTime,x:$.canvas.width-80,y:20});
+				notify.notify('showInfo', {startTime:startTime,x:$.canvasWidth-80,y:20});
 			}
 		});
 	};

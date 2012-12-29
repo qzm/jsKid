@@ -37,14 +37,14 @@ function Sprite($){
 				x=0+radius;
 			}
 			if(ball.rightWall(envRight)){
-				x=$.canvas.width-radius;
+				x=$.canvasWidth-radius;
 			}
 
 			if(ball.topWall(envTop)){
 				y=0+radius;
 			}
 			if(ball.footWall(envFoot)){
-				y=$.canvas.height-radius;
+				y=$.canvasHeight-radius;
 			}
 			x = x + velocityX;
 			y = y + velocityY;
@@ -91,8 +91,8 @@ function Sprite($){
 			}
 		};
 		//绘制图形
+		var _ctx=$.context;
 		ball.draw=function(){
-			var _ctx=$.context;
 			_ctx.save();
 			_ctx.globalAlpha=0.6;
 			_ctx.beginPath();

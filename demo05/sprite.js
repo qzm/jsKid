@@ -105,10 +105,11 @@ function Sprite($){
 				_height=(100*gl.zoom);     //方块的高度
 
 			//遍历地图
+			var humanLocationX=gl.tran+locationX;
 			for (var i = 0; i < map[0].length; i++) {
 				for (var j = 0; j < map.length; j++) {
-					//屏幕外的就不计算了
-					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvas.width){
+					//距离超过200的就不计算了
+					if((i+1)*_width>=(humanLocationX-200)&&i*_width<=(humanLocationX+200)){
 						cLeft=i*_width-gl.tran;              //方块的左上角x坐标值
 						cTop=_height*j+gl.top;              //方块的左上角y坐标值
 						cRight=i*_width-gl.tran+_width;   //方块的右下角x坐标值
@@ -136,7 +137,7 @@ function Sprite($){
 								impactLeft();
 							}
 							//右边边界
-							if(locationX-gl.tran+width/2>$.canvas.width){
+							if(locationX-gl.tran+width/2>$.canvasWidth){
 								impactRight();
 							}
 
@@ -151,7 +152,7 @@ function Sprite($){
 			return {top:top,right:right,foot:foot,left:left};
 		};
 		var deah=function() {
-			if(locationY>=$.canvas.height&&live) {
+			if(locationY>=$.canvasHeight&&live) {
 				notify.notify('alert', {msg:'~~ Game Over ~~'});
 				live=false;
 			}
@@ -171,7 +172,7 @@ function Sprite($){
 			deah();
 			win();
 			if(!tranLock){
-				if(locationX+borderWidth>=$.canvas.width){
+				if(locationX+borderWidth>=$.canvasWidth){
 					//画布左移 人物往右边边走
 					if(contextStart+locationX+borderWidth<=(map[0].length)*(100*gl.zoom)){
 						contextStart+=velocityX;
@@ -234,7 +235,7 @@ function Sprite($){
 			for (var i = 0; i < map[0].length; i++) {
 				for (var j = 0; j < map.length; j++) {
 					//屏幕外的就不画了
-					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvas.width){
+					if((i+1)*_width>=gl.tran&&i*_width<=gl.tran+$.canvasWidth){
 						switch(map[j][i]){
 							case -1:
 								// world.drawAir(map[i][j]);

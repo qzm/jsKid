@@ -3,9 +3,9 @@ window.onload=function(){
 								// 定义Notify
 /////////////////////////////////////////////////////////////////////////////
 	function Notify($) {
-		var notify=this;
-		var map = [];
-		var workerList = [];
+		var notify=this,
+			map = [],
+			workerList = [];
 		notify.register = function (notifyName, notifyFunction) {
 			var _notify = {
 				name: notifyName,
@@ -61,16 +61,16 @@ window.onload=function(){
 	$.canvas = $.Canvas.base();        //获取Canvas对象
 	$.debug=true;                      //Debug模式(默认开启)，影响$.l()
 	$.sprite=new Sprite($);            //精灵类
-	$.notify = new Notify($);          //初始化Notify
+	notify = new Notify($);            //初始化Notify
 	$.model=new Model($);              //初始化Model
 	$.view = new View($);              //初始化View
 	$.contraller = new Contraller($);  //初始化Contraller
 	$.im=new Im($);                    //初始化IM
-	//设置Canvas，自适应大小
-	$.canvas.height=window.innerHeight*0.97||1000;
-	$.canvas.width =window.innerWidth*0.97||650;
-	$.canvas.style.position='relative';
 
+	//设置Canvas，自适应大小
+	$.canvasHeight=$.canvas.height=window.innerHeight*0.97||1000;
+	$.canvasWidth=$.canvas.width =window.innerWidth*0.97||650;
+	$.canvas.style.position='relative';
 	//全局变量，方法
 	gl={
 		showInfo:function (startTime,x,y) {
@@ -79,7 +79,7 @@ window.onload=function(){
 			_ctx.save();
 			_ctx.fillStyle = 'red';
 			_ctx.font = '18px 微软雅黑';
-			var fen=window.requestAnimationFrame.toString().split(' ');
+			var fen=(window.requestAnimationFrame+'').split(' ');
 			if(fen[1].indexOf('callback')>=0){
 				fen[1]='setTimeout()';
 			}
@@ -94,27 +94,26 @@ window.onload=function(){
 								// 注册Notify操作
 /////////////////////////////////////////////////////////////////////////////
 	//创建Demo4 的MVC模式
-	$.notify.register('creatDemo4UI', function (args) {
+	notify.register('creatDemo4UI', function (args) {
 		var _args = args || {
 			data: null
 		};
 		$.model.demo4Ctrl = new $.contraller.demo4Ctrl(new $.view.demo4View($.model.demo4Model));
 	});
 	//设置Demo4 的视图
-	$.notify.register('setBallView', function (args) {
+	notify.register('setBallView', function (args) {
 		var _model=$.model.demo4Model;
 		var startTime=new Date();
-		$.context.clearRect(0,0,$.canvas.width,$.canvas.height);
 		for(var i=0;i<_model.balls.length;i++){
 			_model.balls[i].move();
 			_model.balls[i].draw();
 		}
 		if($.debug){
-			gl.showInfo(startTime,$.canvas.width-80,20);
+			gl.showInfo(startTime,$.canvasWidth-80,20);
 		}
 	});
 	// callAlert
-	$.notify.register('callAlert', function (args) {
+	notify.register('callAlert', function (args) {
 		// alert(args);
 		$.l(args);
 	});
@@ -122,6 +121,6 @@ window.onload=function(){
 								// 调用Notify
 /////////////////////////////////////////////////////////////////////////////
 	//创建MVC
-	$.notify.notify('creatDemo4UI');
-	$.notify.unregister('unregister');
+	notify.notify('creatDemo4UI');
+	notify.unregister('unregister');
 };

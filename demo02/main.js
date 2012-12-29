@@ -1,29 +1,30 @@
 //程序入口
-window.addEventListener('load', function main() {
+window.onload=function main() {
 	//调用核心库
 	var $ = new jsKid();
 	//初始化资源
-	var c,dom,sto,ctx,_canvas;
-	$.init(function () {
-		c = $.Cache;
-		dom = $.Dom;
-		sto = $.Storage;
-		ctx = $.Canvas.init();
-		_canvas = $.Canvas.base();
-		_canvas.height = 700;
-		_canvas.width = 1000;
-		_canvas.style.position = 'relative';
-		center = {
-			x: _canvas.width / 2,
-			y: _canvas.height / 2
-		};
-		step = (2 * Math.PI) / 60;
+	var c = $.Cache,
+		dom = $.Dom,
+		sto = $.Storage,
+		ctx = $.Canvas.init(),
+		canvas = $.Canvas.base();
+
+	canvas.height = 700;
+	canvas.width = 1000;
+	canvas.style.position = 'relative';
+
+	var center = {
+			x: canvas.width / 2,
+			y: canvas.height / 2
+		},
+		step = (2 * Math.PI) / 60,
 		img = $.initImg('img/clock.jpg');
-		ctx.lineCap = 'round';
-		ctx.lineWidth = 8;
-		ctx.fillStyle = 'red';
-		ctx.font = '30px _sans';
-	});
+
+	ctx.lineCap = 'round';
+	ctx.lineWidth = 8;
+	ctx.fillStyle = 'red';
+	ctx.font = '30px _sans';
+
 	img.onload = function () {
 		$.run(function () {
 			var startTime = new Date();
@@ -31,9 +32,9 @@ window.addEventListener('load', function main() {
 			//									动画刷新
 			//**************************************************************************
 			//重置Canvas
-			ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			//画背景图
-			ctx.drawImage(img, (_canvas.width - img.width) / 2, (_canvas.height - img.height) / 2);
+			ctx.drawImage(img, (canvas.width - img.width) / 2, (canvas.height - img.height) / 2);
 			_data = new Date();
 			ctx.fillText(_data.getHours() + ':' + _data.getMinutes() + ':' + _data.getSeconds(), 440, 200);
 			ctx.beginPath();
@@ -78,4 +79,4 @@ window.addEventListener('load', function main() {
 		point.y = Math.ceil(r * Math.sin(pi)) + center.y;
 		return point;
 	}
-});
+};

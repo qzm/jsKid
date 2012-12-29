@@ -18,7 +18,7 @@ function jsKid() {
 					return 'undefined';
 				if(typeof object === 'null')
 					return 'null';
-				return object.inspect ? object.inspect() : object.toString();
+				return object.inspect ? object.inspect() : object+'';
 			} catch(e) {
 				if(e instanceof RangeError) return '...';
 				throw e;
@@ -52,8 +52,10 @@ function jsKid() {
 	$.contraller = null;
 	$.sprite=null;
 	$.canvas = null;
+	$.canvasWidth=0;
+	$.canvasHeight=0;
 	$.context = null;
-	$.event=[];
+	var eventList=[];
 	//IE标示
 	$.browser = true;
 	//初始化,以函数作为参数
@@ -158,26 +160,29 @@ function jsKid() {
 	//$.bind(window,['keydown','mousedown'],callback);
 	$.bind=function(obj,events,callback){
 		var i;
-		$.event.push({obj:obj,events:events,callback:callback});
 		//正常浏览器兼容
+		var callbackFn=function(evevt) {
+			callback(event||window.event);
+		};
 		if(obj.addEventListener){
 			if(typeof events==='string'){
-				obj.addEventListener(events,callback);
+				obj.addEventListener(events,callbackFn);
 			}else if(typeof events==='object'){
 				for(i in events){
-					obj.addEventListener(events[i],callback);
+					obj.addEventListener(events[i],callbackFn);
 				}
 			}
 		//IE兼容
 		}else if(obj.attachEvent){
 			if(typeof events==='string'){
-				obj.attachEvent('on'+events,callback);
+				obj.attachEvent('on'+events,callbackFn);
 			}else if(typeof events==='object'){
 				for(i in events){
-					obj.attachEvent('on'+events[i],callback);
+					obj.attachEvent('on'+events[i],callbackFn);
 				}
 			}
 		}
+		eventList.push({obj:obj,events:events,callback:callbackFn});
 	};
 	//触发绑定的事件
 	//$.setEvent('keydown',{keyCode:37});
@@ -185,10 +190,10 @@ function jsKid() {
 		var _args=args||null;
 		var events=[];
 		var callbacks=[];
-		for(var i in $.event){
-			if(typeof $.event[i].events!=='undefined'){
-				events=events.concat($.event[i].events);
-				callbacks=callbacks.concat($.event[i].callback);
+		for(var i in eventList){
+			if(typeof eventList[i].events!=='undefined'){
+				events=events.concat(eventList[i].events);
+				callbacks=callbacks.concat(eventList[i].callback);
 			}
 		}
 		for (var j = 0; j < events.length; j++) {
@@ -375,30 +380,32 @@ function jsKid() {
 	};
 	//随机取出数组中的一个值
 	window.Array.prototype.random = function() {
-		return this[window.Math.floor(Math.random()*this.length)];
+		return this[(window.Math.random()*this.length)>>0];
 	};
 	//取出数组中最大的一个数
 	window.Array.prototype.max=function() {
 		for(var i=0,_max=this[0];i<this.length;i++){
-			_max=Math.max(_max,this[i]);
+			_max=window.Math.max(_max,this[i]);
 		}
 		return _max;
 	};
 	//取出数组中最小的一个数
-	window.Array.prototype.min=function() {
-		for(var i=0,_min=this[0];i<this.length;i++){
-			_min=Math.min(_min,this[i]);
+	window.Array.prototype.min = function() {
+		for(var i = 0, _min = this[0]; i < this.length; i++) {
+			_min = window.Math.min(_min, this[i]);
 		}
 		return _min;
+	};
+	window.Math.randomRange=function (start,end) {
+		return window.Math.random()*(start-end+1)+end;
 	};
 	window.Array.prototype.enqueue=window.Array.prototype.push;
 	window.Array.prototype.dequeue=window.Array.prototype.shift;
 	window.Math.distance=function(point1,point2){
-		var	_x=point1.x-point2.x,
-			_y=point2.y-point2.y,
-			_x2=_x*_x,
-			_y2=_y*_y;
-		return Math.sqrt(_x2+_y2);
+		var _x = point1.x - point2.x,
+			_y = point2.y - point2.y,
+			_x2 = _x * _x,
+			_y2 = _y * _y;
+		return window.Math.sqrt(_x2+_y2);
 	};
-
 }
