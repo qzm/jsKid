@@ -153,6 +153,7 @@ function jsKid() {
     //$.bind(window,['keydown','mousedown'],callback);
     $.bind=function(obj,events,callback){
         //正常浏览器兼容
+        var i,j;
         function callbackFn(evevt) {
             callback(event||window.event);
         }
@@ -160,7 +161,7 @@ function jsKid() {
             if(typeof events==='string'){
                 obj.addEventListener(events,callbackFn);
             }else if(typeof events==='object'){
-                for(var i in events){
+                for(i in events){
                     obj.addEventListener(events[i],callbackFn);
                 }
             }
@@ -169,7 +170,7 @@ function jsKid() {
             if(typeof events==='string'){
                 obj.attachEvent('on'+events,callbackFn);
             }else if(typeof events==='object'){
-                for(var j in events){
+                for(j in events){
                     obj.attachEvent('on'+events[j],callbackFn);
                 }
             }
@@ -181,14 +182,15 @@ function jsKid() {
     $.setEvent=function(event,args){
         args=args||null;
         var events=[],
-            callbacks=[];
-        for(var i in eventList){
+            callbacks=[],
+            i,j;
+        for(i in eventList){
             if(typeof eventList[i].events!=='undefined'){
                 events=events.concat(eventList[i].events);
                 callbacks=callbacks.concat(eventList[i].callback);
             }
         }
-        for (var j = 0; j < events.length; j++) {
+        for (j = 0; j < events.length; j++) {
             if(events[j]===event){
                 callbacks[j](args);
             }
@@ -305,7 +307,8 @@ function jsKid() {
             if ( window.JSON && window.JSON.parse ) {
                 var l='{',r='}',
                     JSON= window.JSON || null,
-                    key;
+                    key,
+                    jsonString;
                 if(typeof(json)=='Array'){
                     l='[';r=']';
                 }
@@ -315,7 +318,7 @@ function jsKid() {
                         return JSON.stringify(json);
                     } else {
                         //IE支持
-                        var jsonString = l,type,value;
+                        jsonString = l,type,value;
                         for(key in json) {
                             type = typeof(json[key]);
                             switch(type) {
