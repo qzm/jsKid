@@ -11,14 +11,13 @@ function Contraller($) {
 			var ball=new $.sprite.Ball(
 				event.clientX,
 				event.clientY,
-				[30,40,50,60].random(),
+				[30,40,50,60,70].random(),
 				color.random()
 			);
 			ball.setEnvironment(Math.randomRange(-4,4),Math.randomRange(-4,4),0, 0, $.canvasWidth, $.canvasHeight);
 			_model.balls.push(ball);
 			$.l('balls:'+_model.balls.length);
 		});
-		
 		//动画循环
 		$.run(function () {
 			//绘制视图
