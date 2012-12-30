@@ -22,7 +22,6 @@ function Contraller($) {
 			//绘制视图
 			$.context.clearRect(0,0,$.canvasWidth,$.canvasHeight);
 			notify.notify('setBallView');
-			// console.log($.randomInt(10,12));
 
 		});
 	};

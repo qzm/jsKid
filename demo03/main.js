@@ -7,7 +7,9 @@ window.onload=function main() {
 		dom = $.Dom,
 		sto = $.Storage,
 		ctx = $.Canvas.init(),
-		canvas = $.Canvas.base();
+		canvas = $.Canvas.base(),
+		xPoint=0,
+		yPoint=0;
 		canvas.height = 700;
 		canvas.width = 1000;
 		canvas.style.position = 'relative';
@@ -19,8 +21,8 @@ window.onload=function main() {
 		ctx.lineWidth = 10;
 	//监听鼠标移动事件
 	$.bind(canvas,'mousemove',function (evevt){
-		c.set('xPoint', event.layerX);
-		c.set('yPoint', event.layerY);
+		xPoint=event.layerX;
+		yPoint=event.layerY;
 	});
 	img.onload = function () {
 		$.run(function () {
@@ -34,7 +36,7 @@ window.onload=function main() {
 			ctx.save();
 			ctx.fillStyle = 'red';
 			ctx.font = '18px _sans';
-			ctx.fillText('FPS:' + (1000 / (new Date() - startTime + 1))>>0, 920, 20);
+			ctx.fillText('FPS:' + ((1000 / (new Date() - startTime + 1))>>0), 920, 20);
 			ctx.restore();
 
 			//画背景图
@@ -42,13 +44,10 @@ window.onload=function main() {
 			//放大镜
 			ctx.save();
 			ctx.beginPath();
-			ctx.arc(c.get('xPoint'), c.get('yPoint'), 100, 0, Math.PI * 2, true);
+			ctx.arc(xPoint, yPoint, 100, 0, Math.PI * 2, true);
 			ctx.clip();
 			ctx.drawImage(img, (canvas.width - 1024) / 2, (canvas.height - 768) / 2, 1024, 768);
 			ctx.stroke();
-
-			// fillStyle('rgb(255,255,255)');
-			// fill();
 			ctx.closePath();
 			ctx.restore();
 

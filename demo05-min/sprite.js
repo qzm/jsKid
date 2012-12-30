@@ -1,13 +1,13 @@
 function Sprite($){
 	var sprite=this,_ctx=$.context,
 		enumWallType={
-			air     : -1,
-			fire    : -4,
-			firewall:  3,
+			zhanwei :  0,
 			gress   :  1,
 			wall    :  2,
 			water   : -3,
-			zhanwei :  0
+			air     : -1,
+			firewall:  3,
+			fire    : -4
 		};
 	sprite.Human=function(args){
 	var
