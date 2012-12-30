@@ -1,3 +1,4 @@
+//控制器
 function Contraller($) {
 	var contraller=this;
 	contraller.demo4Ctrl = function (view) {

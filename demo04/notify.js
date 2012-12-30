@@ -19,7 +19,7 @@ window.onload=function(){
 		};
 		notify.unregister = function (notifyName) {
 			for (var i in map) {
-				if (map[i].name == notifyName) {
+				if (map[i].name === notifyName) {
 					delete map[i];
 				}
 			}
@@ -125,8 +125,11 @@ window.onload=function(){
 		  msg:'Error'
 		},args);
 	});
-affegeg;
-
+	notify.register('test',function (args) {
+		var _args=Object.extend({
+			msg:'test'
+		},args);
+	});
 /////////////////////////////////////////////////////////////////////////////
 								// 调用Notify
 /////////////////////////////////////////////////////////////////////////////
