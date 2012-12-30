@@ -18,6 +18,7 @@ function Contraller($) {
 			_model.balls.push(ball);
 			$.l('balls:'+_model.balls.length);
 		});
+		
 		//动画循环
 		$.run(function () {
 			//绘制视图
