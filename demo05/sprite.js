@@ -75,27 +75,27 @@ function Sprite($){
 			tranLock=true;                       //锁定滚屏
 		};
 		//human Left碰撞
-		var impactLeft=function() {
+		function impactLeft() {
 			locationX-=velocityX;
 			velocityX=0;
-		};
+		}
 		//human Right碰撞
-		var impactRight=function() {
+		function impactRight() {
 			locationX-=velocityX;
 			velocityX=0;
-		};
+		}
 		//human Top碰撞
-		var impactTop=function() {
+		function impactTop() {
 			locationY-=velocityY;
 			velocityY=0;
-		};
+		}
 		//human Foot碰撞
-		var impactFoot=function() {
+		function impactFoot() {
 			locationY-=velocityY;
 			velocityY=0;
 			jumpLock=false;                  //人物碰到地面，可以跳跃，解锁跳跃
-		};
-		var checkImpact=function(){
+		}
+		function checkImpact(){
 			var hLeft=locationX-width/2,     //人的左上角x坐标值
 				hTop=locationY-tall/2,       //人的左上角y坐标值
 				hRight=locationX+width/2,    //人的右下角x坐标值
@@ -151,28 +151,33 @@ function Sprite($){
 				}
 			}
 
-		};
+		}
 		//检查人物是否死亡
-		var deah=function() {
+		function deah() {
 			if(locationY>=$.canvasHeight&&live) {
 				notify.notify('alert', {msg:'~~ Game Over ~~'});
 				live=false;
-				window.location.reload();
+				window.location=window.location;
 			}
-		};
+		}
 		//检查游戏是否胜利
-		var win=function() {
+		function win() {
 			if((locationX+gl.tran>=100*gl.zoom*(map[0].length-5))&&live) {
-				notify.notify('alert', {msg:'~~ You Win ~~'});
+				// notify.notify('alert', {msg:'~~ You Win ~~'});
+				alert('~~ You Win ~~');
 				live=false;
-				window.location.reload();
+				window.location=window.location;
 			}
-		};
+		}
+		//偏移位置
+		function tran(){
+			return contextStart;
+		}
 		//刷新人物数据
 		human.refresh=function(){
 			locationX+=velocityX;            //X轴运动
 			locationY+=velocityY;            //Y轴运动
-			gl.tran=human.contextStart();    //设置全局变量，偏移位置
+			gl.tran=tran();                  //设置全局变量，偏移位置
 			checkImpact();                   //检查是否碰撞
 			velocityY+=acceleration;         //重力加速度作用
 			deah();                          //检查人物是否死亡
@@ -204,9 +209,7 @@ function Sprite($){
 
 			return human;
 		};
-		human.contextStart=function(){
-			return contextStart;
-		};
+
 		human.draw=function(){
 			var _human=anction[moveFrame[actionStep]];
 			_ctx.save();

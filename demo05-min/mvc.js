@@ -1,6 +1,5 @@
 function Model($){
-	var model;
-	model={
+	var model={
 		humanActionCtrl:null,			//demo4 的控制器
 		humanActionModel:{
 			human:null,
@@ -12,7 +11,8 @@ function Model($){
 }
 
 function View($) {
-	this.HumanActionView = function (model) {
+	var view=this;
+	view.HumanActionView = function (model) {
 		this.model = model;
 		this.model.human=new $.sprite.Human({tall:60,width:60,locationX:300*gl.zoom,locationY:$.canvasHeight-(300)*gl.zoom});
 		this.model.world=new $.sprite.World(map);
@@ -24,12 +24,12 @@ function View($) {
 function Contraller($) {
 	var contraller=this;
 	contraller.HumanActionCtrl = function (view) {
-		var _ctrl = this;
-		var _view = view;
-		var _model = view.model;
-		var human=_model.human;
-		var world=_model.world;
-		var logo=_model.logo;
+		var _ctrl = this,
+			_view = view,
+			_model = view.model,
+			human=_model.human,
+			world=_model.world,
+			logo=_model.logo;
 		$.bind(window,'keydown',function(event){
 			switch(event.keyCode){
 				case 37:     //‘←’键
@@ -62,9 +62,18 @@ function Contraller($) {
 		//动画循环
 		var startTime,ctx=$.context;
 		var _width=$.canvasWidth/10,_height=$.canvasHeight/20;
+		var counter=0;
 		$.run(function(){
 			startTime=new Date();
-			ctx.clearRect(0,0,$.canvasWidth,$.canvasHeight);
+			//每隔20秒摧毁一次Canvas画布，防止路径未闭合
+			if(counter>=1200){
+				$.canvas.width=$.canvasWidth;
+				counter=0;
+			}else{
+				ctx.clearRect(0,0,$.canvasWidth,$.canvasHeight);
+				counter++;
+			}
+			// ctx.clearRect(0,0,$.canvas.width,$.canvas.height);
 			logo.draw();
 			world.draw();
 			human.refresh();

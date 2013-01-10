@@ -19,8 +19,13 @@ function Contraller($) {
 				case 87:     //‘W’键
 					human.jump();
 					break;
+				case 80:     //‘P’键
+					$.playPause();
+					break;
 			}
+
 		});
+
 		$.bind(window,'mousedown',function(event){
 			if(event.clientX>$.canvasWidth*3/4){
 				human.move(39);
@@ -39,9 +44,19 @@ function Contraller($) {
 		//动画循环
 		var startTime,ctx=$.context;
 		var _width=$.canvasWidth/10,_height=$.canvasHeight/20;
+		// var counter=0;
 		$.run(function(){
 			startTime=new Date();
+			//每隔10秒摧毁一次Canvas画布，防止路径未闭合
+			// if(counter>=600){
+				// $.canvas.width=$.canvasWidth;
+				// counter=0;
+			// }else{
+				// ctx.clearRect(0,0,$.canvasWidth,$.canvasHeight);
+				// counter++;
+			// }
 			ctx.clearRect(0,0,$.canvasWidth,$.canvasHeight);
+			//画各种元素
 			logo.draw();
 			world.draw();
 			human.refresh();

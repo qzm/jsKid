@@ -19,11 +19,19 @@ function Contraller($) {
 			$.l('balls:'+_model.balls.length);
 		});
 		//动画循环
+		$.bind(window,'keydown',function (event){
+			//按下减号
+			if(event.keyCode===189){
+				_model.balls.shift();
+			//按下加号
+			}else if(event.keyCode===187){
+				$.setEvent('click');
+			}
+		});
 		$.run(function () {
 			//绘制视图
 			$.context.clearRect(0,0,$.canvasWidth,$.canvasHeight);
 			notify.notify('setBallView');
-
 		});
 	};
 	return this;
