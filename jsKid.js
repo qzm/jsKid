@@ -1,14 +1,27 @@
-//  jsKid.js
-//  jsKid
-//  Created by qzm on 2012-12-30.
-//  Copyright 2012 qzm. All rights reserved.
-
+/**
+ * @return :{Class}
+ * @author :QZM
+ * @version:1.0
+ */
 function jsKid() {
-	//下面的$都代表jsKid
-	var $=this,
+
+	var
+		/**
+		 * @type:{指针}
+		 * @todo:用$代替jsKid的this
+		 */
+		$=this,
+		/**
+		 * @type:{Array}
+		 * @todo:存放绑定的时间
+		 */
 		eventList=[];
-	//拓展系统方法
-	//类的继承 参考：Prototype JavaScript framework, version 1.7.1
+
+	/**
+	 * @return:{Object}
+	 * @see   :Prototype JavaScript framework, version 1.7.1
+	 * @todo  :类的继承
+	 */
 	Object.extend = function(des, source) {
 		for(var key in source) {
 			des[key] = source[key];
@@ -17,11 +30,10 @@ function jsKid() {
 	};
 	//拓展Object方法
 	Object.extend(Object, {
-		//  参考：Prototype JavaScript framework, version 1.7.1
 		/**
-		 * 用字符串表示对象.
-		 * @param {object}
-		 * @return {String}
+		 * @param :{object}
+		 * @return:{String}
+		 * @todo  :用字符串表示对象.
 		 */
 		inspect: function(object) {
 			try {
@@ -35,6 +47,11 @@ function jsKid() {
 				throw e;
 			}
 		},
+		/**
+		 * @param :{object}
+		 * @return:{String}
+		 * @todo  :获得对象中所有的key值.
+		 */
 		keys: function(object) {
 			var keys = [],property;
 			for(property in object)
@@ -42,9 +59,9 @@ function jsKid() {
 			return keys;
 		},
 		/**
-		 * 获得对象中所有的value值.
-		 * @param {object}
-		 * @return {values}
+		 * @param :{object}
+		 * @return:{values}
+		 * @todo  :获得对象中所有的value值.
 		 */
 		values: function(object) {
 			var values = [],property;
@@ -53,9 +70,9 @@ function jsKid() {
 			return values;
 		},
 		/**
-		 * 复制一个对象.
-		 * @param {object}
-		 * @return {object}
+		 * @param :{object}
+		 * @return:{object}
+		 * @todo  :复制一个对象.
 		 */
 		clone: function(object) {
 			return Object.extend({}, object);
@@ -376,64 +393,120 @@ function jsKid() {
 	};
 	//扩展系统方法
 
-
-	//将字符串转换成int类型
+	/**
+	 * @return:{Integer}
+	 * @parme :{[,String]}
+	 * @todo  :将字符串转换成int类型
+	 */
 	window.String.prototype.toInt=function(){
 		return window.parseInt(this);
 	};
-	//将字符串转换成JSON类型
+	/**
+	 * @return:{JSON}
+	 * @parme :{[,String]}
+	 * @todo  :将字符串转换成JSON类型
+	 */
 	window.String.prototype.toJSON=window.parseJSON=function(str){
 		return $.JSON.parse(str||this);
 	};
-	//将字符串转化成数组
+	/**
+	 * @return:{Array}
+	 * @parme :{[,String]}
+	 * @todo  :将字符串转化成数组
+	 */
 	window.String.prototype.toArray=window.parseArray=function(str){
 		return Array.prototype.slice.call(str||this);
 	};
-	//判断字符串是否是邮件
+	/**
+	 * @return:{Boolean}
+	 * @parme :{[,String]}
+	 * @todo  :判断字符串是否是邮件
+	 */
 	window.String.prototype.isEmail=window.isEmail=function(str){
 		return (/^[\w_\.]+@[\w_\.]+\.[a-zA-Z]+$/).test(str||this);
 	};
-	//判断字符串是否是手机号码
+	/**
+	 * @return:{Boolean}
+	 * @parme :{[,String]}
+	 * @todo  :判断字符串是否是手机号码
+	 */
 	window.String.prototype.isMobile=window.isMobile=function(str){
 		return (/^1[358]\d{9}$/).test(str||this);
 	};
-	//判断字符串是否是身份证号码
+	/**
+	 * @return:{Boolean}
+	 * @parme :{[,String]}
+	 * @todo  :判断字符串是否是身份证号码
+	 */
 	window.String.prototype.isIdCard=window.isIdCard=function(str){
 		return (/^(\d{15})$|^(\d{17}[\d\*]$)/).test(str||this);
 	};
+	/**
+	 * @return:{Boolean}
+	 * @parme :{[,String]}
+	 * @todo  :判断字符串是否是数字
+	 */
 	window.String.prototype.isNumber=window.isNumber=function(str){
-		return (/^[1-9]\d+$/).test(str||this);
+		return (/(^[1-9]\d+$)|(^\d$)/).test(str||this);
 	};
-	//随机取出数组中的一个值
+	/**
+	 * @return:{Array value}
+	 * @todo  :随机取出数组中的一个值
+	 */
 	window.Array.prototype.random = function() {
+		//“ >>0 ”向右移0位，作用同Math.floor(),向下取整，但性能更优
 		return this[(window.Math.random()*this.length)>>0];
 	};
-	//取出数组中最大的一个数
+	/**
+	 * @return:{Array value}
+	 * @todo  :取出数组中最大的一个数
+	 */
 	window.Array.prototype.max=function() {
 		for(var i=0,max=this[0];i<this.length;i++){
 			max=window.Math.max(max,this[i]);
 		}
 		return max;
 	};
-	//取出数组中最小的一个数
+	/**
+	 * @return:{Array value}
+	 * @todo  :取出数组中最小的一个数
+	 */
 	window.Array.prototype.min = function() {
 		for(var i = 0, min = this[0]; i < this.length; i++) {
 			min = window.Math.min(min, this[i]);
 		}
 		return min;
 	};
+	/**
+	 * @param :{Number,Number}
+	 * @return:{Number:double}
+	 * @todo  :随机生成一个介于start 和 end之间的数
+	 */
 	window.Math.randomRange=function (start,end) {
 		return window.Math.random()*(start-end+1)+end;
 	};
+	/**
+	 * @todo  :定义数组的enqueue(入队)方法
+	 */
 	window.Array.prototype.enqueue=window.Array.prototype.push;
+	/**
+	 * @todo  :定义数组的dequeue(出队)方法
+	 */
 	window.Array.prototype.dequeue=window.Array.prototype.shift;
+	/**
+	 * @type  :{Class}
+	 * @todo  :定义一个Vector类
+	 */
 	window.Vector=window.Array;
+	/**
+	 * @param :{Point,Point}
+	 * @return:{Number:double}
+	 * @todo  :计算两点之间的距离
+	 */
 	window.Math.distance=function(point1,point2){
 		var dx = point1.x - point2.x,
-			dy = point2.y - point2.y,
-			dx2 = dx * dx,
-			dy2 = dy * dy;
-		return window.Math.sqrt(dx2+dy2);
+			dy = point2.y - point2.y;
+		return window.Math.sqrt((dx * dx)+(dy * dy));
 	};
 
 }
