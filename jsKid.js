@@ -508,6 +508,9 @@ function jsKid() {
 			dy = point2.y - point2.y;
 		return window.Math.sqrt((dx * dx)+(dy * dy));
 	};
-
+	/**
+	 * 队列
+	 */
+	window.Queue=window.Array;
 }
 
