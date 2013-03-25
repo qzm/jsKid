@@ -53,4 +53,6 @@ window.onload = function() {
 	//创建MVC
 	notify.notify('creatHumanActionUI');
 
+	
+
 };
