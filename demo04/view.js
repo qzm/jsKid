@@ -4,7 +4,7 @@ function View($) {
 		this.model = model;
 		var balls = [],
 			ball,
-			color = ['orangered', 'red', 'skyblue', 'blue', 'yellowgreen', 'green', 'yellow', 'pink', 'orange', 'lightblue', 'lightgreen', 'gold', 'orchid', 'fuchsia', 'silver', 'teal'];
+		color = ['orangered', 'red', 'skyblue', 'blue', 'yellowgreen', 'green', 'yellow', 'pink', 'orange', 'lightblue', 'lightgreen', 'gold', 'orchid', 'fuchsia', 'silver', 'teal'];
 		for(var i = 0; i < Math.ceil((window.innerWidth + window.innerHeight) / 20); i++) {
 			ball = new $.sprite.Ball(
 				Math.ceil(Math.randomRange(30, $.canvasWidth - 30)),   //X轴坐标

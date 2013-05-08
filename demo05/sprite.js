@@ -18,21 +18,22 @@ function Sprite($){
 			locationX:0,            //位置X
 			locationY:0             //位置Y
 		},args),
+		gameZoom=gl.zoom;
 		live=true;                  //是否活着
-		tall=_args.tall*gl.zoom,    //身高
-		width=_args.width*gl.zoom,  //横向宽度
+		tall=_args.tall*gameZoom,    //身高
+		width=_args.width*gameZoom,  //横向宽度
 		locationX=_args.locationX,  //位置X
 		locationY=_args.locationY,  //位置Y
-		velocityValue=15*gl.zoom,   //横向移动的【速率】
+		velocityValue=15*gameZoom,   //横向移动的【速率】
 		velocityX = 0,              //X轴速度
 		velocityY = 0,              //Y轴速度
-		velocityStartY=-40*gl.zoom, //起跳的速度
-		acceleration=3*gl.zoom,     //重力加速度
+		velocityStartY=-40*gameZoom, //起跳的速度
+		acceleration=3*gameZoom,     //重力加速度
 		jumpLock=true,              //跳跃锁，锁定时，无法跳跃
 		tranLock=true,              //滚动屏幕锁，锁定时，屏幕无法滚动
 		contextStart=0,             //人离最左边地图的偏移位置
 		borderWidth=200,            //距离屏幕两边的距离，小于则屏幕滚动
-		cube=(100*gl.zoom),         //方块的大小
+		cube=(100*gameZoom),         //方块的大小
 		faceTo='right',             //人脸朝向
 		actionStep=0,               //人物动作的步骤数目，画到第几帧了
 		lastTime=new Date(),        //上一次画人物的时间
@@ -105,8 +106,8 @@ function Sprite($){
 				cTop,                        //方块的左上角y坐标值
 				cRight,                      //方块的右下角x坐标值
 				cBottom,                     //方块的右下角y坐标值
-				_width=(100*gl.zoom),        //方块的宽度
-				_height=(100*gl.zoom);       //方块的高度
+				_width=(100*gameZoom),        //方块的宽度
+				_height=(100*gameZoom);       //方块的高度
 
 			//遍历地图
 			var humanLocationX=gl.tran+locationX;            //人物的偏移位置
@@ -162,7 +163,7 @@ function Sprite($){
 		}
 		//检查游戏是否胜利
 		function win() {
-			if((locationX+gl.tran>=100*gl.zoom*(map[0].length-5))&&live) {
+			if((locationX+gl.tran>=100*gameZoom*(map[0].length-5))&&live) {
 				// notify.notify('alert', {msg:'~~ You Win ~~'});
 				alert('~~ You Win ~~');
 				live=false;
@@ -185,9 +186,9 @@ function Sprite($){
 			if(!tranLock){
 				if(locationX+borderWidth>=$.canvasWidth){
 					//画布左移 人物往右边边走
-					if(contextStart+locationX+borderWidth<=(map[0].length)*(100*gl.zoom)){
+					if(contextStart+locationX+borderWidth<=(map[0].length)*(100*gameZoom)){
 						contextStart+=velocityX;
-						if(contextStart+locationX>=(map[0].length)*(100*gl.zoom)){
+						if(contextStart+locationX>=(map[0].length)*(100*gameZoom)){
 							contextStart=(map[0].length)*(100*gl.zoom)-locationX-borderWidth;
 						}
 						locationX-=velocityX;
@@ -230,6 +231,8 @@ function Sprite($){
 			if(actionStep==moveFrame.length){
 				actionStep=0;
 			}
+
+			
 			_ctx.closePath();
 			_ctx.restore();
 			return human;

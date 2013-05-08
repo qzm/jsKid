@@ -27,7 +27,11 @@ window.onload=function(){
 		$.canvas = $.Canvas.base();        //获取Canvas对象
 		$.debug=true;                      //Debug模式(默认开启)，影响$.l()
 		//设置Canvas，自适应大小
-		$.canvasHeight=$.canvas.height=window.innerHeight*0.97||1000;
+		var musicBoxHeight=0;
+		if ($.Dom("$audio")[0]) {
+			musicBoxHeight=$.Dom("$audio")[0].clientHeight;
+		}
+		$.canvasHeight=$.canvas.height=(window.innerHeight*0.97-musicBoxHeight)||1000;
 		$.canvasWidth=$.canvas.width =window.innerWidth*0.97||650;
 		$.canvas.style.position='relative';
 		//全局变量，方法
@@ -118,8 +122,14 @@ window.onload=function(){
 			var _args = Object.extend({
 				msg: ''
 			},args);
-			alert(_args.msg);
+			alert('~~Game Over~~');
 		});
+		// notify.register('alert', function (args) {
+		// 	var _args = Object.extend({
+		// 		msg: ''
+		// 	},args);
+		// 	alert('Again!');
+		// });
 		//测试信息
 		notify.register('test', function (args) {
 			var _args = Object.extend({
@@ -145,13 +155,16 @@ window.onload=function(){
 	/////////////////////////////////////////////////////////////////////////////
 		var waitForImage=setInterval(function(){
 			//图片资源加载完毕后开始主逻辑
+
 			if(gl.imgReady==gl.imgLength){
 				//去除定时器
 				clearInterval(waitForImage);
 				//创建MVC
-				notify.notify('creatHumanActionUI',{aa:'aa',bb:'cc'});
+				notify.notify('creatHumanActionUI');
 				//测试用
 				// notify.notify('alert',{msg:'游戏开始'});
+			}else{
+				$.l("waitting for the image!");
 			}
 		},100);
 
