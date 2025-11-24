@@ -1,0 +1,86 @@
+{
+  "name": "jskid",
+  "version": "2.0.0",
+  "description": "现代化重构的jsKid 2D游戏引擎 - TypeScript + 现代工具链",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint packages --ext .ts,.tsx",
+    "lint:fix": "eslint packages --ext .ts,.tsx --fix",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\"",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist coverage .nyc_output",
+    "precommit": "lint-staged",
+    "create:module": "node scripts/create-module.js",
+    "add:demo": "node scripts/add-demo.js"
+  },
+  "keywords": [
+    "game-engine",
+    "2d",
+    "html5",
+    "canvas",
+    "typescript",
+    "javascript",
+    "sprite",
+    "animation",
+    "physics"
+  ],
+  "author": "QZM <qzmdev@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qzm/jskid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qzm/jskid/issues"
+  },
+  "homepage": "https://github.com/qzm/jskid#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "demos/*"
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.1.0",
+    "playwright": "^1.40.0",
+    "prettier": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.3"
+  },
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
+}

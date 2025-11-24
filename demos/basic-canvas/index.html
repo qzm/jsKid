@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jsKid 2.0 - 基础Canvas演示</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        canvas {
+            border: 2px solid #333;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .info ul {
+            margin-bottom: 0;
+        }
+
+        .stats {
+            font-family: monospace;
+            background: #212529;
+            color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>jsKid 2.0 - 基础Canvas演示</h1>
+
+        <div class="game-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+            <div class="controls">
+                <button id="startBtn">开始游戏</button>
+                <button id="pauseBtn">暂停</button>
+                <button id="resumeBtn">恢复</button>
+                <button id="resetBtn">重置</button>
+            </div>
+
+            <div class="stats" id="stats">
+                准备就绪...
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>演示说明</h3>
+            <ul>
+                <li><strong>蓝色方块</strong>: 玩家对象，自动向右移动，到达边界后回到左侧</li>
+                <li><strong>红色圆形</strong>: 敌人对象，上下浮动移动</li>
+                <li><strong>键盘控制</strong>: 使用方向键控制蓝色方块移动</li>
+                <li><strong>鼠标控制</strong>: 点击画布可以在点击位置创建新的游戏对象</li>
+            </ul>
+            <p>这个演示展示了jsKid 2.0游戏引擎的基础功能，包括：</p>
+            <ul>
+                <li>✅ TypeScript类型安全</li>
+                <li>✅ 游戏循环和帧率控制</li>
+                <li>✅ 游戏对象系统</li>
+                <li>✅ 场景管理</li>
+                <li>✅ 输入处理</li>
+                <li>✅ Canvas渲染</li>
+                <li>✅ 事件系统</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        // 演示将在构建后使用
+        console.log('jsKid 2.0 基础Canvas演示');
+
+        // 这里将引入构建后的jsKid核心模块
+        // import { createJskid, BaseScene, BaseGameObject } from '@jskid/core';
+
+        // 暂时显示占位信息
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const stats = document.getElementById('stats');
+
+        function showPlaceholder() {
+            ctx.fillStyle = '#333';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('jsKid 2.0 演示', canvas.width / 2, canvas.height / 2 - 30);
+            ctx.fillText('正在构建中...', canvas.width / 2, canvas.height / 2 + 10);
+            ctx.font = '16px Arial';
+            ctx.fillText('请运行 `pnpm build` 构建项目', canvas.width / 2, canvas.height / 2 + 50);
+        }
+
+        showPlaceholder();
+
+        stats.innerHTML = `
+            jsKid 2.0 现代化游戏引擎<br>
+            版本: 2.0.0<br>
+            状态: 等待构建...
+        `;
+
+        // 禁用控制按钮（暂不可用）
+        document.querySelectorAll('button').forEach(btn => {
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>

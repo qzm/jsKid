@@ -1,0 +1,36 @@
+{
+  "name": "@jskid/utils",
+  "version": "2.0.0",
+  "description": "jsKid游戏引擎工具函数库",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "test": "jest"
+  },
+  "keywords": [
+    "jskid",
+    "game-engine",
+    "utils",
+    "math",
+    "vector",
+    "color"
+  ],
+  "author": "QZM <qzmdev@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  }
+}

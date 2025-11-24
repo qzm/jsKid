@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jsKid基础演示</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background-color: #1a1a1a;
+        font-family: Arial, sans-serif;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        margin-bottom: 10px;
+      }
+      p {
+        margin-bottom: 20px;
+        color: #aaa;
+      }
+      canvas {
+        border: 2px solid #333;
+        image-rendering: pixelated;
+        background-color: #000;
+      }
+      .info {
+        margin-top: 20px;
+        padding: 15px;
+        background: #222;
+        border-radius: 5px;
+        max-width: 600px;
+      }
+      .info h2 {
+        margin-top: 0;
+        color: #4CAF50;
+      }
+      .info ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+      .info li {
+        padding: 5px 0;
+      }
+      .status {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        margin-left: 10px;
+      }
+      .status.success {
+        background-color: #4CAF50;
+        color: white;
+      }
+      .status.error {
+        background-color: #f44336;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎮 jsKid游戏引擎基础演示</h1>
+    <p>展示现代化重构后的jsKid引擎核心功能</p>
+    <canvas id="game-canvas" width="800" height="600"></canvas>
+
+    <div class="info">
+      <h2>演示说明</h2>
+      <ul id="features">
+        <li>✓ 引擎初始化<span class="status success">正常</span></li>
+        <li>✓ 游戏循环运行<span class="status success">60 FPS</span></li>
+        <li>✓ Canvas渲染器<span class="status success">就绪</span></li>
+        <li>✓ 基础图形绘制<span class="status success">激活</span></li>
+      </ul>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

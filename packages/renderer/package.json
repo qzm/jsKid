@@ -1,0 +1,55 @@
+{
+  "name": "@jskid/renderer",
+  "version": "2.0.0",
+  "description": "jsKid游戏引擎渲染模块 - Canvas 2D & WebGL",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "game-engine",
+    "renderer",
+    "canvas",
+    "webgl",
+    "typescript",
+    "jskid"
+  ],
+  "author": "QZM",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qzm/jskid.git",
+    "directory": "packages/renderer"
+  },
+  "dependencies": {
+    "@jskid/core": "workspace:*",
+    "@jskid/utils": "workspace:*",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
