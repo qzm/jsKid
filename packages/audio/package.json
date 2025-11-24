@@ -1,0 +1,44 @@
+{
+  "name": "@jskid/audio",
+  "version": "2.0.0",
+  "description": "Audio system for jsKid 2D game engine - Web Audio API wrapper",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": [
+    "jskid",
+    "audio",
+    "web-audio",
+    "game-engine",
+    "sound",
+    "music"
+  ],
+  "author": "QZM <qzmdev@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@jskid/core": "workspace:*",
+    "@jskid/utils": "workspace:*",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@jskid/core": "^2.0.0"
+  }
+}

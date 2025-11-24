@@ -11,10 +11,16 @@ importers:
       eventemitter3:
         specifier: ^5.0.1
         version: 5.0.1
+      matter-js:
+        specifier: ^0.19.0
+        version: 0.19.0
     devDependencies:
       '@types/jest':
         specifier: ^29.5.8
         version: 29.5.14
+      '@types/matter-js':
+        specifier: ^0.19.0
+        version: 0.19.8
       '@types/node':
         specifier: ^20.9.0
         version: 20.19.25
@@ -67,6 +73,25 @@ importers:
         specifier: ^3.6.3
         version: 3.9.1(@types/node@20.19.25)(typescript@5.9.3)(vite@5.4.21)
 
+  packages/audio:
+    dependencies:
+      '@jskid/core':
+        specifier: workspace:*
+        version: link:../core
+      '@jskid/utils':
+        specifier: workspace:*
+        version: link:../utils
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+    devDependencies:
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.21(@types/node@20.19.25)
+
   packages/core:
     dependencies:
       eventemitter3:
@@ -91,6 +116,31 @@ importers:
       vite-plugin-dts:
         specifier: ^3.6.3
         version: 3.9.1(@types/node@20.19.25)(typescript@5.9.3)(vite@5.4.21)
+
+  packages/physics:
+    dependencies:
+      '@jskid/core':
+        specifier: workspace:*
+        version: link:../core
+      '@jskid/utils':
+        specifier: workspace:*
+        version: link:../utils
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+      matter-js:
+        specifier: ^0.19.0
+        version: 0.19.0
+    devDependencies:
+      '@types/matter-js':
+        specifier: ^0.19.0
+        version: 0.19.8
+      typescript:
+        specifier: ^5.2.2
+        version: 5.9.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.21(@types/node@20.19.25)
 
   packages/renderer:
     dependencies:
@@ -1441,6 +1491,10 @@ packages:
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+    dev: true
+
+  /@types/matter-js@0.19.8:
+    resolution: {integrity: sha512-W2ZWG58Lijv/4v768NgpeyFqqiOyslmAU7qqM1Lhz4XBoUgGtZtPz4CjcOKYtqHIak14dvPldslQhltqLTWwsw==}
     dev: true
 
   /@types/node@20.19.25:
@@ -3731,6 +3785,10 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /matter-js@0.19.0:
+    resolution: {integrity: sha512-v2huwvQGOHTGOkMqtHd2hercCG3f6QAObTisPPHg8TZqq2lz7eIY/5i/5YUV8Ibf3mEioFEmwibcPUF2/fnKKQ==}
+    dev: false
 
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
