@@ -1,10 +1,18 @@
 /**
- * 太空射击游戏 - jsKid演示
- * 展示完整的游戏机制：移动、射击、碰撞、得分
+ * 太空射击游戏 - 使用 jsKid 引擎重构版本
+ *
+ * 展示功能:
+ * - jsKid 游戏循环和渲染系统
+ * - 完整的游戏机制：移动、射击、碰撞、得分
+ * - Boss战斗系统
+ * - 道具系统和玩家升级
+ * - 粒子特效
+ * - 波次系统和难度递增
  */
 
-import { CanvasRenderer } from '../../packages/renderer/src/canvas-renderer';
-import { Vector2, Color } from '../../packages/utils/src';
+import { createJskid } from '../../packages/core/src/index';
+import { CanvasRenderer } from '../../packages/renderer/src/index';
+import { Vector2, Color } from '../../packages/utils/src/index';
 
 // ==================== 游戏配置 ====================
 const GAME_CONFIG = {
@@ -14,30 +22,30 @@ const GAME_CONFIG = {
     speed: 300,
     size: 40,
     fireRate: 0.15,
-    maxHealth: 100
+    maxHealth: 100,
   },
   bullet: {
     speed: 500,
     size: 5,
-    damage: 10
+    damage: 10,
   },
   enemy: {
     speed: 100,
     size: 30,
     spawnRate: 1.5,
-    health: 30
+    health: 30,
   },
   powerup: {
     speed: 80,
     size: 20,
-    spawnChance: 0.2 // 20%概率掉落
+    spawnChance: 0.2, // 20%概率掉落
   },
   boss: {
     speed: 50,
     size: 80,
     health: 300,
-    fireRate: 0.5
-  }
+    fireRate: 0.5,
+  },
 };
 
 // ==================== 游戏对象基类 ====================
@@ -59,12 +67,7 @@ abstract class GameObject {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = this.color.toRGBA();
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
   }
 
   isOffScreen(): boolean {
@@ -91,12 +94,7 @@ class Player extends GameObject {
   canFire: boolean = true;
 
   constructor() {
-    super(
-      GAME_CONFIG.width / 2,
-      GAME_CONFIG.height - 60,
-      GAME_CONFIG.player.size,
-      new Color(0, 200, 255)
-    );
+    super(GAME_CONFIG.width / 2, GAME_CONFIG.height - 60, GAME_CONFIG.player.size, new Color(0, 200, 255));
     this.health = GAME_CONFIG.player.maxHealth;
   }
 
@@ -140,7 +138,6 @@ class Player extends GameObject {
 
   fire(): Bullet | null {
     if (!this.canFire) return null;
-
     this.canFire = false;
     return new Bullet(this.position.x, this.position.y - this.size / 2);
   }
@@ -166,31 +163,16 @@ class Bullet extends GameObject {
 
   update(deltaTime: number): void {
     this.position.y += this.velocity.y * deltaTime;
-
     if (this.isOffScreen()) {
       this.alive = false;
     }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    // 绘制子弹轨迹
     ctx.fillStyle = this.color.toRGBA();
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - 10,
-      this.size,
-      20
-    );
-
-    // 发光效果
     ctx.shadowBlur = 10;
     ctx.shadowColor = 'yellow';
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - 10,
-      this.size,
-      20
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - 10, this.size, 20);
     ctx.shadowBlur = 0;
   }
 }
@@ -209,10 +191,8 @@ class Enemy extends GameObject {
 
   update(deltaTime: number): void {
     this.position.y += this.velocity.y * deltaTime;
-
     // 左右摇摆
     this.position.x += Math.sin(this.position.y * 0.01) * 50 * deltaTime;
-
     if (this.isOffScreen()) {
       this.alive = false;
     }
@@ -221,12 +201,7 @@ class Enemy extends GameObject {
   render(ctx: CanvasRenderingContext2D): void {
     // 绘制敌人主体
     ctx.fillStyle = this.color.toRGBA();
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
 
     // 绘制眼睛
     ctx.fillStyle = 'white';
@@ -236,15 +211,8 @@ class Enemy extends GameObject {
     // 绘制生命条
     const healthBarWidth = this.size;
     const healthPercent = this.health / this.maxHealth;
-
     ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillRect(
-      this.position.x - healthBarWidth / 2,
-      this.position.y - this.size / 2 - 8,
-      healthBarWidth,
-      4
-    );
-
+    ctx.fillRect(this.position.x - healthBarWidth / 2, this.position.y - this.size / 2 - 8, healthBarWidth, 4);
     ctx.fillStyle = healthPercent > 0.5 ? '#00ff00' : healthPercent > 0.25 ? '#ffff00' : '#ff0000';
     ctx.fillRect(
       this.position.x - healthBarWidth / 2,
@@ -276,10 +244,7 @@ class Particle {
     this.position = new Vector2(x, y);
     const angle = Math.random() * Math.PI * 2;
     const speed = Math.random() * 150 + 50;
-    this.velocity = new Vector2(
-      Math.cos(angle) * speed,
-      Math.sin(angle) * speed
-    );
+    this.velocity = new Vector2(Math.cos(angle) * speed, Math.sin(angle) * speed);
     this.life = 0;
     this.maxLife = Math.random() * 0.5 + 0.3;
     this.size = size;
@@ -290,18 +255,13 @@ class Particle {
     this.life += deltaTime;
     this.position.x += this.velocity.x * deltaTime;
     this.position.y += this.velocity.y * deltaTime;
-    this.alpha = 1 - (this.life / this.maxLife);
+    this.alpha = 1 - this.life / this.maxLife;
     return this.life < this.maxLife;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.alpha})`;
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
   }
 }
 
@@ -310,7 +270,7 @@ enum PowerUpType {
   HEALTH = 'health',
   WEAPON = 'weapon',
   SHIELD = 'shield',
-  RAPID_FIRE = 'rapid_fire'
+  RAPID_FIRE = 'rapid_fire',
 }
 
 class PowerUp extends GameObject {
@@ -322,7 +282,7 @@ class PowerUp extends GameObject {
       [PowerUpType.HEALTH]: new Color(0, 255, 0),
       [PowerUpType.WEAPON]: new Color(255, 165, 0),
       [PowerUpType.SHIELD]: new Color(100, 100, 255),
-      [PowerUpType.RAPID_FIRE]: new Color(255, 255, 0)
+      [PowerUpType.RAPID_FIRE]: new Color(255, 255, 0),
     };
 
     super(x, y, GAME_CONFIG.powerup.size, colors[type]);
@@ -333,7 +293,6 @@ class PowerUp extends GameObject {
   update(deltaTime: number): void {
     this.position.y += this.velocity.y * deltaTime;
     this.rotation += deltaTime * 3;
-
     if (this.isOffScreen()) {
       this.alive = false;
     }
@@ -344,15 +303,14 @@ class PowerUp extends GameObject {
     ctx.translate(this.position.x, this.position.y);
     ctx.rotate(this.rotation);
 
-    // 绘制道具符号
     ctx.fillStyle = this.color.toRGBA();
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = this.color.toRGBA();
 
     if (this.type === PowerUpType.HEALTH) {
-      // 十字
       ctx.fillRect(-3, -10, 6, 20);
       ctx.fillRect(-10, -3, 20, 6);
     } else if (this.type === PowerUpType.WEAPON) {
-      // 三角形
       ctx.beginPath();
       ctx.moveTo(0, -10);
       ctx.lineTo(-8, 10);
@@ -360,21 +318,14 @@ class PowerUp extends GameObject {
       ctx.closePath();
       ctx.fill();
     } else if (this.type === PowerUpType.SHIELD) {
-      // 盾牌
       ctx.beginPath();
       ctx.arc(0, 0, 10, 0, Math.PI * 2);
       ctx.fill();
     } else if (this.type === PowerUpType.RAPID_FIRE) {
-      // 闪电
       ctx.fillRect(-2, -10, 4, 8);
       ctx.fillRect(-6, -4, 8, 4);
       ctx.fillRect(-2, 0, 4, 10);
     }
-
-    // 发光效果
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = this.color.toRGBA();
-    ctx.fill();
 
     ctx.restore();
   }
@@ -390,18 +341,12 @@ class Boss extends GameObject {
   moveTimer: number = 0;
 
   constructor() {
-    super(
-      GAME_CONFIG.width / 2,
-      100,
-      GAME_CONFIG.boss.size,
-      new Color(255, 0, 255)
-    );
+    super(GAME_CONFIG.width / 2, 100, GAME_CONFIG.boss.size, new Color(255, 0, 255));
     this.health = GAME_CONFIG.boss.health;
     this.maxHealth = GAME_CONFIG.boss.health;
   }
 
   update(deltaTime: number): void {
-    // 移动模式
     this.moveTimer += deltaTime;
     if (this.moveTimer > 3) {
       this.movePattern = (this.movePattern + 1) % 3;
@@ -409,21 +354,16 @@ class Boss extends GameObject {
     }
 
     if (this.movePattern === 0) {
-      // 左右移动
       this.position.x += Math.sin(this.moveTimer * 2) * 100 * deltaTime;
     } else if (this.movePattern === 1) {
-      // 圆周运动
       this.position.x = GAME_CONFIG.width / 2 + Math.cos(this.moveTimer * 2) * 150;
       this.position.y = 100 + Math.sin(this.moveTimer * 2) * 50;
     } else {
-      // 上下移动
       this.position.y = 100 + Math.sin(this.moveTimer * 3) * 30;
     }
 
-    // 限制边界
     this.position.x = Math.max(this.size, Math.min(GAME_CONFIG.width - this.size, this.position.x));
 
-    // 更新阶段
     const healthPercent = this.health / this.maxHealth;
     if (healthPercent < 0.3) {
       this.phase = 3;
@@ -431,54 +371,34 @@ class Boss extends GameObject {
       this.phase = 2;
     }
 
-    // 射击计时
     this.fireTimer += deltaTime;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    // Boss主体
     ctx.fillStyle = this.color.toRGBA();
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
 
-    // 炮塔
     ctx.fillStyle = 'rgba(200, 0, 200, 0.8)';
     ctx.fillRect(this.position.x - 15, this.position.y + this.size / 2 - 10, 10, 20);
     ctx.fillRect(this.position.x + 5, this.position.y + this.size / 2 - 10, 10, 20);
 
-    // 眼睛（根据阶段变化）
     const eyeColor = this.phase === 3 ? 'red' : this.phase === 2 ? 'yellow' : 'white';
     ctx.fillStyle = eyeColor;
     ctx.fillRect(this.position.x - 20, this.position.y - 10, 10, 10);
     ctx.fillRect(this.position.x + 10, this.position.y - 10, 10, 10);
 
-    // Boss生命条
     const barWidth = this.size * 1.5;
-    const barHeight = 8;
     const healthPercent = this.health / this.maxHealth;
-
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-    ctx.fillRect(
-      this.position.x - barWidth / 2,
-      this.position.y - this.size / 2 - 15,
-      barWidth,
-      barHeight
-    );
-
-    const healthColor = healthPercent > 0.6 ? '#00ff00' : healthPercent > 0.3 ? '#ffff00' : '#ff0000';
-    ctx.fillStyle = healthColor;
+    ctx.fillRect(this.position.x - barWidth / 2, this.position.y - this.size / 2 - 15, barWidth, 8);
+    ctx.fillStyle = healthPercent > 0.6 ? '#00ff00' : healthPercent > 0.3 ? '#ffff00' : '#ff0000';
     ctx.fillRect(
       this.position.x - barWidth / 2,
       this.position.y - this.size / 2 - 15,
       barWidth * healthPercent,
-      barHeight
+      8
     );
 
-    // Boss标识
     ctx.fillStyle = 'white';
     ctx.font = 'bold 12px Arial';
     ctx.textAlign = 'center';
@@ -486,7 +406,7 @@ class Boss extends GameObject {
   }
 
   canFire(): boolean {
-    const fireRate = GAME_CONFIG.boss.fireRate / this.phase; // 阶段越高射速越快
+    const fireRate = GAME_CONFIG.boss.fireRate / this.phase;
     if (this.fireTimer >= fireRate) {
       this.fireTimer = 0;
       return true;
@@ -508,13 +428,10 @@ class BossBullet extends GameObject {
 
   constructor(x: number, y: number, targetX: number, targetY: number) {
     super(x, y, 8, new Color(255, 0, 255));
-
-    // 计算朝向玩家的方向
     const dx = targetX - x;
     const dy = targetY - y;
     const angle = Math.atan2(dy, dx);
     const speed = 200;
-
     this.velocity.x = Math.cos(angle) * speed;
     this.velocity.y = Math.sin(angle) * speed;
   }
@@ -522,7 +439,6 @@ class BossBullet extends GameObject {
   update(deltaTime: number): void {
     this.position.x += this.velocity.x * deltaTime;
     this.position.y += this.velocity.y * deltaTime;
-
     if (this.isOffScreen()) {
       this.alive = false;
     }
@@ -570,8 +486,11 @@ class Star {
 }
 
 // ==================== 游戏主类 ====================
-class Game {
+class SpaceShooterGame {
+  private engine;
   private renderer: CanvasRenderer;
+  private canvas: HTMLCanvasElement;
+
   private player: Player;
   private bullets: Bullet[] = [];
   private enemies: Enemy[] = [];
@@ -589,7 +508,6 @@ class Game {
   private comboTimer: number = 0;
   private highScore: number = 0;
 
-  // 玩家增益
   private weaponLevel: number = 1;
   private hasShield: boolean = false;
   private shieldTimer: number = 0;
@@ -599,14 +517,19 @@ class Game {
   private paused: boolean = false;
   private gameOver: boolean = false;
 
-  private lastTime: number = 0;
+  constructor(canvasId: string) {
+    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    this.canvas.width = GAME_CONFIG.width;
+    this.canvas.height = GAME_CONFIG.height;
 
-  constructor() {
-    this.renderer = new CanvasRenderer({
-      canvas: 'game-canvas',
-      width: GAME_CONFIG.width,
-      height: GAME_CONFIG.height,
-      backgroundColor: '#000000'
+    this.renderer = new CanvasRenderer(this.canvas);
+
+    this.engine = createJskid({
+      debug: false,
+      canvasWidth: GAME_CONFIG.width,
+      canvasHeight: GAME_CONFIG.height,
+      fps: 60,
+      autoStart: false,
     });
 
     this.player = new Player();
@@ -616,10 +539,9 @@ class Game {
       this.stars.push(new Star());
     }
 
-    // 加载最高分
     this.loadHighScore();
-
-    this.setupControls();
+    this.bindEvents();
+    this.bindControls();
     this.updateUI();
   }
 
@@ -637,7 +559,17 @@ class Game {
     }
   }
 
-  private setupControls(): void {
+  private bindEvents(): void {
+    this.engine.on('engine:update', (deltaTime: number) => {
+      this.update(deltaTime);
+    });
+
+    this.engine.on('engine:render', () => {
+      this.render();
+    });
+  }
+
+  private bindControls(): void {
     window.addEventListener('keydown', (e) => {
       this.keys.add(e.code);
 
@@ -650,7 +582,7 @@ class Game {
         this.togglePause();
       }
 
-      if (e.code === 'KeyR') {
+      if (e.code === 'KeyR' && this.gameOver) {
         this.restart();
       }
     });
@@ -677,15 +609,16 @@ class Game {
     const bullet = this.player.fire();
     if (!bullet) return;
 
-    // 根据武器等级发射多个子弹
     if (this.weaponLevel === 1) {
       this.bullets.push(bullet);
     } else if (this.weaponLevel === 2) {
-      // 双发
-      this.bullets.push(new Bullet(this.player.position.x - 10, this.player.position.y - this.player.size / 2));
-      this.bullets.push(new Bullet(this.player.position.x + 10, this.player.position.y - this.player.size / 2));
+      this.bullets.push(
+        new Bullet(this.player.position.x - 10, this.player.position.y - this.player.size / 2)
+      );
+      this.bullets.push(
+        new Bullet(this.player.position.x + 10, this.player.position.y - this.player.size / 2)
+      );
     } else if (this.weaponLevel >= 3) {
-      // 三发散射
       this.bullets.push(bullet);
       const leftBullet = new Bullet(this.player.position.x - 15, this.player.position.y - this.player.size / 2);
       leftBullet.velocity.x = -50;
@@ -702,7 +635,6 @@ class Game {
 
   private spawnPowerUp(x: number, y: number): void {
     if (Math.random() > GAME_CONFIG.powerup.spawnChance) return;
-
     const types = [PowerUpType.HEALTH, PowerUpType.WEAPON, PowerUpType.SHIELD, PowerUpType.RAPID_FIRE];
     const type = types[Math.floor(Math.random() * types.length)];
     this.powerups.push(new PowerUp(x, y, type));
@@ -845,32 +777,19 @@ class Game {
   private update(deltaTime: number): void {
     if (this.paused || this.gameOver) return;
 
-    // 处理输入
     this.handleInput(deltaTime);
-
-    // 更新星空
-    this.stars.forEach(star => star.update(deltaTime));
-
-    // 更新玩家
+    this.stars.forEach((star) => star.update(deltaTime));
     this.player.update(deltaTime);
-
-    // 更新粒子
-    this.particles = this.particles.filter(particle => particle.update(deltaTime));
-
-    // 更新子弹
-    this.bullets = this.bullets.filter(bullet => {
+    this.particles = this.particles.filter((particle) => particle.update(deltaTime));
+    this.bullets = this.bullets.filter((bullet) => {
       bullet.update(deltaTime);
       return bullet.alive;
     });
-
-    // 更新敌人
-    this.enemies = this.enemies.filter(enemy => {
+    this.enemies = this.enemies.filter((enemy) => {
       enemy.update(deltaTime);
       return enemy.alive;
     });
-
-    // 更新道具
-    this.powerups = this.powerups.filter(powerup => {
+    this.powerups = this.powerups.filter((powerup) => {
       powerup.update(deltaTime);
       return powerup.alive;
     });
@@ -879,7 +798,6 @@ class Game {
     if (this.boss) {
       this.boss.update(deltaTime);
 
-      // Boss射击
       if (this.boss.canFire()) {
         const bulletCount = this.boss.phase;
         for (let i = 0; i < bulletCount; i++) {
@@ -900,8 +818,7 @@ class Game {
       }
     }
 
-    // 更新Boss子弹
-    this.bossBullets = this.bossBullets.filter(bullet => {
+    this.bossBullets = this.bossBullets.filter((bullet) => {
       bullet.update(deltaTime);
       return bullet.alive;
     });
@@ -915,28 +832,23 @@ class Game {
         this.enemySpawnTimer = 0;
       }
 
-      // Boss出现条件：每5波
       if (this.wave % 5 === 0 && this.enemiesKilled % 10 === 0 && this.enemies.length === 0) {
         this.spawnBoss();
       }
     }
 
-    // 检测碰撞
     this.checkCollisions();
 
-    // 波次升级
     if (this.enemiesKilled > 0 && this.enemiesKilled % 10 === 0 && this.enemies.length === 0 && !this.boss) {
       this.wave++;
       this.updateUI();
     }
 
-    // 连击计时
     this.comboTimer += deltaTime;
     if (this.comboTimer > 3) {
       this.resetCombo();
     }
 
-    // 护盾计时
     if (this.hasShield) {
       this.shieldTimer += deltaTime;
       if (this.shieldTimer > 10) {
@@ -944,7 +856,6 @@ class Game {
       }
     }
 
-    // 快速射击计时
     if (this.rapidFireTimer < 8) {
       this.rapidFireTimer += deltaTime;
     } else if (GAME_CONFIG.player.fireRate < 0.15) {
@@ -954,17 +865,16 @@ class Game {
 
   private render(): void {
     const ctx = this.renderer.getContext();
-
-    this.renderer.clear();
+    this.renderer.clear('#000000');
 
     // 渲染星空
-    this.stars.forEach(star => star.render(ctx));
+    this.stars.forEach((star) => star.render(ctx));
 
     // 渲染粒子
-    this.particles.forEach(particle => particle.render(ctx));
+    this.particles.forEach((particle) => particle.render(ctx));
 
     // 渲染游戏对象
-    this.powerups.forEach(powerup => powerup.render(ctx));
+    this.powerups.forEach((powerup) => powerup.render(ctx));
     this.player.render(ctx);
 
     // 渲染护盾
@@ -976,17 +886,23 @@ class Game {
       ctx.stroke();
     }
 
-    this.bullets.forEach(bullet => bullet.render(ctx));
-    this.enemies.forEach(enemy => enemy.render(ctx));
+    this.bullets.forEach((bullet) => bullet.render(ctx));
+    this.enemies.forEach((enemy) => enemy.render(ctx));
 
     if (this.boss) {
       this.boss.render(ctx);
     }
 
-    this.bossBullets.forEach(bullet => bullet.render(ctx));
+    this.bossBullets.forEach((bullet) => bullet.render(ctx));
 
     // 渲染UI叠加层
     this.renderOverlay(ctx);
+
+    // 引擎标识
+    ctx.fillStyle = '#00ff00';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('jsKid Engine', GAME_CONFIG.width - 10, 20);
   }
 
   private renderOverlay(ctx: CanvasRenderingContext2D): void {
@@ -1024,7 +940,6 @@ class Game {
     document.getElementById('wave')!.textContent = this.wave.toString();
     document.getElementById('health')!.textContent = this.player.health.toString();
 
-    // 更新健康条颜色
     const healthElement = document.getElementById('health')!.parentElement!;
     if (this.player.health < 30) {
       healthElement.style.borderColor = '#ff0000';
@@ -1050,25 +965,21 @@ class Game {
     document.getElementById('final-score')!.textContent = this.score.toString();
     document.getElementById('enemies-killed')!.textContent = this.enemiesKilled.toString();
 
-    // 显示最高分
     const gameOverDiv = document.getElementById('game-over')!;
     let highScoreText = gameOverDiv.querySelector('.high-score');
     if (!highScoreText) {
       highScoreText = document.createElement('p');
       highScoreText.className = 'high-score';
-      highScoreText.style.color = '#00ffff';
+      (highScoreText as HTMLElement).style.color = '#00ffff';
       gameOverDiv.insertBefore(highScoreText, document.getElementById('restart-btn'));
     }
     highScoreText.textContent = `最高分: ${this.highScore}`;
 
     gameOverDiv.classList.add('active');
-
-    // 爆炸效果
     this.createExplosion(this.player.position.x, this.player.position.y, new Color(0, 200, 255), 50);
   }
 
   private restart(): void {
-    // 重置游戏状态
     this.player = new Player();
     this.bullets = [];
     this.enemies = [];
@@ -1099,24 +1010,19 @@ class Game {
     this.updateUI();
   }
 
-  public run(): void {
-    const gameLoop = (currentTime: number) => {
-      const deltaTime = this.lastTime > 0 ? (currentTime - this.lastTime) / 1000 : 0;
-      this.lastTime = currentTime;
+  start(): void {
+    console.log('🚀 太空射击游戏 - jsKid引擎版本');
+    console.log('✅ 完整游戏系统已启用');
+    console.log('🎮 使用方向键移动，空格键射击');
+    console.log('💡 P键暂停，R键重启');
+    this.engine.start();
+  }
 
-      this.update(Math.min(deltaTime, 0.1));
-      this.render();
-
-      requestAnimationFrame(gameLoop);
-    };
-
-    requestAnimationFrame(gameLoop);
+  destroy(): void {
+    this.engine.destroy();
   }
 }
 
-// ==================== 启动游戏 ====================
-console.log('🚀 太空射击游戏启动中...');
-const game = new Game();
-game.run();
-console.log('✅ 游戏已启动！');
-console.log('💡 使用方向键移动，空格键射击');
+// 启动游戏
+const game = new SpaceShooterGame('game-canvas');
+game.start();

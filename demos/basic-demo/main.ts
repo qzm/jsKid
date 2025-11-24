@@ -1,41 +1,22 @@
 /**
- * jsKid基础演示
- * 展示引擎核心功能
+ * jsKid基础演示 - 使用 jsKid 引擎重构版本
+ * 展示引擎核心功能:
+ * - 游戏循环和事件系统
+ * - 渲染器使用
+ * - 向量和颜色工具
+ * - 键盘交互
  */
 
-import { JskidEngine } from '../../packages/core/src/engine';
-import { CanvasRenderer } from '../../packages/renderer/src/canvas-renderer';
-import { Vector2, Color } from '../../packages/utils/src';
+import { createJskid } from '../../packages/core/src/index';
+import { CanvasRenderer } from '../../packages/renderer/src/index';
+import { Vector2, Color } from '../../packages/utils/src/index';
 
-// 创建渲染器
-const renderer = new CanvasRenderer({
-  canvas: 'game-canvas',
-  width: 800,
-  height: 600,
-  backgroundColor: '#0a0a0a',
-  antialias: false
-});
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 600;
 
-console.log('✓ 渲染器创建成功');
-
-// 创建引擎实例
-const engine = new JskidEngine({
-  debug: true,
-  canvasWidth: 800,
-  canvasHeight: 600,
-  fps: 60,
-  autoStart: false
-});
-
-console.log('✓ 引擎创建成功');
-
-// 游戏状态
-let time = 0;
-let fps = 0;
-let frameCount = 0;
-let lastFpsUpdate = 0;
-
-// 简单的演示对象
+/**
+ * 演示对象类
+ */
 class DemoObject {
   position: Vector2;
   velocity: Vector2;
@@ -44,10 +25,7 @@ class DemoObject {
 
   constructor(x: number, y: number) {
     this.position = new Vector2(x, y);
-    this.velocity = new Vector2(
-      Math.random() * 200 - 100,
-      Math.random() * 200 - 100
-    );
+    this.velocity = new Vector2(Math.random() * 200 - 100, Math.random() * 200 - 100);
     this.color = Color.random();
     this.size = 20 + Math.random() * 30;
   }
@@ -58,120 +36,183 @@ class DemoObject {
     this.position.y += this.velocity.y * deltaTime;
 
     // 边界反弹
-    if (this.position.x < 0 || this.position.x > width) {
+    if (this.position.x < this.size / 2 || this.position.x > width - this.size / 2) {
       this.velocity.x *= -1;
-      this.position.x = Math.max(0, Math.min(width, this.position.x));
+      this.position.x = Math.max(this.size / 2, Math.min(width - this.size / 2, this.position.x));
     }
-    if (this.position.y < 0 || this.position.y > height) {
+    if (this.position.y < this.size / 2 || this.position.y > height - this.size / 2) {
       this.velocity.y *= -1;
-      this.position.y = Math.max(0, Math.min(height, this.position.y));
+      this.position.y = Math.max(this.size / 2, Math.min(height - this.size / 2, this.position.y));
     }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
+    // 绘制主体
     ctx.fillStyle = this.color.toRGBA();
-    ctx.fillRect(
-      this.position.x - this.size / 2,
-      this.position.y - this.size / 2,
-      this.size,
-      this.size
-    );
+    ctx.fillRect(this.position.x - this.size / 2, this.position.y - this.size / 2, this.size, this.size);
+
+    // 绘制高光效果
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillRect(this.position.x - this.size / 2 + 2, this.position.y - this.size / 2 + 2, this.size / 2, this.size / 2);
   }
 }
 
-// 创建演示对象
-const demoObjects: DemoObject[] = [];
-for (let i = 0; i < 20; i++) {
-  demoObjects.push(new DemoObject(
-    Math.random() * 800,
-    Math.random() * 600
-  ));
-}
+/**
+ * 基础演示类
+ */
+class BasicDemo {
+  private engine;
+  private renderer: CanvasRenderer;
+  private canvas: HTMLCanvasElement;
+  private demoObjects: DemoObject[] = [];
+  private fps = 0;
+  private frameCount = 0;
+  private lastFpsUpdate = 0;
+  private totalTime = 0;
 
-console.log(`✓ 创建了 ${demoObjects.length} 个演示对象`);
+  constructor(canvasId: string) {
+    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    this.canvas.width = CANVAS_WIDTH;
+    this.canvas.height = CANVAS_HEIGHT;
 
-// 游戏循环
-function gameLoop(currentTime: number): void {
-  requestAnimationFrame(gameLoop);
+    this.renderer = new CanvasRenderer(this.canvas);
 
-  const deltaTime = time > 0 ? (currentTime - time) / 1000 : 0;
-  time = currentTime;
+    this.engine = createJskid({
+      debug: true,
+      canvasWidth: CANVAS_WIDTH,
+      canvasHeight: CANVAS_HEIGHT,
+      fps: 60,
+      autoStart: false,
+    });
 
-  // 更新FPS计数
-  frameCount++;
-  if (currentTime - lastFpsUpdate >= 1000) {
-    fps = frameCount;
-    frameCount = 0;
-    lastFpsUpdate = currentTime;
-
-    // 更新UI
-    updateFPSDisplay(fps);
+    this.bindEvents();
+    this.bindKeyboard();
+    this.createDemoObjects(20);
   }
 
-  // 清空画布
-  renderer.clear();
+  private bindEvents(): void {
+    this.engine.on('engine:update', (deltaTime: number) => {
+      this.update(deltaTime);
+    });
 
-  const ctx = renderer.getContext();
-  ctx.save();
+    this.engine.on('engine:render', () => {
+      this.render();
+    });
 
-  // 更新并渲染所有对象
-  demoObjects.forEach(obj => {
-    obj.update(deltaTime, 800, 600);
-    obj.render(ctx);
-  });
+    this.engine.on('engine:error', (error: Error) => {
+      console.error('引擎错误:', error);
+    });
+  }
 
-  // 绘制FPS信息
-  ctx.font = '16px monospace';
-  ctx.fillStyle = '#4CAF50';
-  ctx.fillText(`FPS: ${fps}`, 10, 25);
-  ctx.fillText(`对象数量: ${demoObjects.length}`, 10, 45);
-  ctx.fillText(`时间: ${(time / 1000).toFixed(1)}s`, 10, 65);
+  private bindKeyboard(): void {
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+        // 空格键添加新对象
+        this.demoObjects.push(
+          new DemoObject(Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT)
+        );
+        console.log(`添加对象，当前数量: ${this.demoObjects.length}`);
+      } else if (event.code === 'KeyC') {
+        // C键清空对象
+        this.demoObjects.length = 0;
+        console.log('清空所有对象');
+      } else if (event.code === 'KeyR') {
+        // R键重置为默认数量
+        this.demoObjects.length = 0;
+        this.createDemoObjects(20);
+        console.log('重置对象数量');
+      }
+    });
+  }
 
-  // 绘制标题
-  ctx.font = 'bold 24px Arial';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
-  ctx.fillText('jsKid现代化游戏引擎演示', 400, 40);
+  private createDemoObjects(count: number): void {
+    for (let i = 0; i < count; i++) {
+      this.demoObjects.push(
+        new DemoObject(Math.random() * CANVAS_WIDTH, Math.random() * CANVAS_HEIGHT)
+      );
+    }
+    console.log(`✓ 创建了 ${count} 个演示对象`);
+  }
 
-  ctx.restore();
-}
+  private update(deltaTime: number): void {
+    this.totalTime += deltaTime;
 
-// 更新FPS显示
-function updateFPSDisplay(currentFps: number): void {
-  const statusElements = document.querySelectorAll('.status');
-  if (statusElements[1]) {
-    statusElements[1].textContent = `${currentFps} FPS`;
+    // 更新FPS计数
+    this.frameCount++;
+    if (this.totalTime - this.lastFpsUpdate >= 1.0) {
+      this.fps = this.frameCount;
+      this.frameCount = 0;
+      this.lastFpsUpdate = this.totalTime;
+      this.updateFPSDisplay(this.fps);
+    }
+
+    // 更新所有演示对象
+    for (const obj of this.demoObjects) {
+      obj.update(deltaTime, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }
+  }
+
+  private render(): void {
+    const ctx = this.renderer.getContext();
+
+    // 清空画布
+    this.renderer.clear('#0a0a0a');
+
+    // 绘制所有演示对象
+    for (const obj of this.demoObjects) {
+      obj.render(ctx);
+    }
+
+    // 绘制标题
+    ctx.font = 'bold 28px Arial';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText('jsKid 现代化游戏引擎演示', CANVAS_WIDTH / 2, 40);
+
+    // 绘制信息
+    ctx.font = '16px monospace';
+    ctx.fillStyle = '#4CAF50';
+    ctx.textAlign = 'left';
+    ctx.fillText(`FPS: ${this.fps}`, 10, CANVAS_HEIGHT - 60);
+    ctx.fillText(`对象数量: ${this.demoObjects.length}`, 10, CANVAS_HEIGHT - 40);
+    ctx.fillText(`运行时间: ${this.totalTime.toFixed(1)}s`, 10, CANVAS_HEIGHT - 20);
+
+    // 绘制操作提示
+    ctx.font = '14px Arial';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.textAlign = 'center';
+    ctx.fillText('空格: 添加对象 | C: 清空 | R: 重置', CANVAS_WIDTH / 2, CANVAS_HEIGHT - 20);
+
+    // 引擎标识
+    ctx.fillStyle = '#00ff00';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('jsKid Engine', CANVAS_WIDTH - 10, 20);
+  }
+
+  private updateFPSDisplay(currentFps: number): void {
+    const statusElements = document.querySelectorAll('.status');
+    if (statusElements[1]) {
+      statusElements[1].textContent = `${currentFps} FPS`;
+    }
+  }
+
+  start(): void {
+    console.log('🚀 jsKid基础演示启动');
+    console.log('✓ 引擎初始化完成');
+    console.log('✓ 渲染器就绪');
+    console.log('💡 操作提示:');
+    console.log('   - 按空格键添加对象');
+    console.log('   - 按C键清空所有对象');
+    console.log('   - 按R键重置对象数量');
+    this.engine.start();
+  }
+
+  destroy(): void {
+    this.engine.destroy();
   }
 }
 
 // 启动演示
-console.log('🚀 启动演示...');
-requestAnimationFrame(gameLoop);
-
-// 监听引擎事件
-engine.on('engine:update', ({ deltaTime }) => {
-  // 这里可以添加更多游戏逻辑
-});
-
-engine.on('engine:error', ({ error }) => {
-  console.error('引擎错误:', error);
-});
-
-// 添加键盘交互
-document.addEventListener('keydown', (event) => {
-  if (event.code === 'Space') {
-    // 空格键添加新对象
-    demoObjects.push(new DemoObject(
-      Math.random() * 800,
-      Math.random() * 600
-    ));
-    console.log(`添加对象，当前数量: ${demoObjects.length}`);
-  } else if (event.code === 'KeyC') {
-    // C键清空对象
-    demoObjects.length = 0;
-    console.log('清空所有对象');
-  }
-});
-
-console.log('✓ 演示启动完成');
-console.log('💡 按空格键添加对象，按C键清空对象');
+const demo = new BasicDemo('game-canvas');
+demo.start();
