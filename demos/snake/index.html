@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇 - jsKid游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-container {
+            position: relative;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            border: 3px solid #333;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .hud {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            gap: 15px;
+        }
+
+        .hud-item {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            text-align: center;
+            flex: 1;
+        }
+
+        .hud-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .hud-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            border: 3px solid #e94560;
+            text-align: center;
+            display: none;
+            z-index: 10;
+        }
+
+        .game-over.active {
+            display: block;
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            color: #e94560;
+            margin-bottom: 20px;
+        }
+
+        .game-over p {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+
+        .game-over button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .game-over button:hover {
+            background: #c93450;
+            transform: scale(1.05);
+        }
+
+        .controls-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .controls-info h3 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .control-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .key {
+            background: #667eea;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐍 贪吃蛇</h1>
+
+    <div class="game-container">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+        <div class="hud">
+            <div class="hud-item">
+                <div class="hud-label">得分</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">最高分</div>
+                <div class="hud-value" id="high-score">0</div>
+            </div>
+            <div class="hud-item">
+                <div class="hud-label">长度</div>
+                <div class="hud-value" id="length">3</div>
+            </div>
+        </div>
+
+        <div class="game-over" id="game-over">
+            <h2>游戏结束!</h2>
+            <p>最终得分: <span id="final-score">0</span></p>
+            <button id="restart-btn">重新开始</button>
+        </div>
+    </div>
+
+    <div class="controls-info">
+        <h3>🎮 游戏说明</h3>
+        <div class="controls-grid">
+            <div class="control-item">
+                <span class="key">↑↓←→</span>
+                <span>控制方向</span>
+            </div>
+            <div class="control-item">
+                <span class="key">空格</span>
+                <span>开始游戏</span>
+            </div>
+        </div>
+        <p style="margin-top: 15px; opacity: 0.9; font-size: 14px;">
+            💡 吃到金色食物可以增长蛇身，得分越高速度越快！避免撞墙和撞到自己。
+        </p>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+</body>
+</html>

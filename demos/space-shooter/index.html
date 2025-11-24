@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>太空射击游戏 - jsKid演示</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(to bottom, #0a0a1a 0%, #1a0a2e 100%);
+        font-family: 'Courier New', monospace;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      h1 {
+        margin: 20px 0 10px;
+        font-size: 2.5em;
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+        letter-spacing: 3px;
+      }
+
+      .game-container {
+        position: relative;
+        margin: 20px 0;
+      }
+
+      canvas {
+        border: 3px solid #00ffff;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        background: #000;
+        image-rendering: pixelated;
+      }
+
+      .hud {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2em;
+        text-shadow: 2px 2px 4px #000;
+        pointer-events: none;
+      }
+
+      .hud-item {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 2px solid #00ffff;
+      }
+
+      .score {
+        color: #ffff00;
+      }
+
+      .health {
+        color: #ff0000;
+      }
+
+      .wave {
+        color: #00ff00;
+      }
+
+      .controls {
+        margin: 20px 0;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .controls h3 {
+        color: #00ffff;
+        margin-bottom: 10px;
+        font-size: 1.3em;
+      }
+
+      .control-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 8px;
+        border: 2px solid #00ffff;
+      }
+
+      .control-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .key {
+        background: #333;
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 2px solid #00ffff;
+        font-weight: bold;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .game-over {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 40px;
+        border-radius: 10px;
+        border: 3px solid #ff0000;
+        text-align: center;
+        display: none;
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+      }
+
+      .game-over.active {
+        display: block;
+      }
+
+      .game-over h2 {
+        font-size: 3em;
+        color: #ff0000;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #ff0000;
+      }
+
+      .game-over p {
+        font-size: 1.5em;
+        margin: 10px 0;
+      }
+
+      .game-over button {
+        margin-top: 20px;
+        padding: 15px 40px;
+        font-size: 1.2em;
+        background: #00ffff;
+        color: #000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+      }
+
+      .game-over button:hover {
+        background: #00cccc;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+      }
+
+      .paused {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 3em;
+        color: #ffff00;
+        text-shadow: 0 0 20px #ffff00;
+        display: none;
+        pointer-events: none;
+      }
+
+      .paused.active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🚀 太空射击游戏</h1>
+
+    <div class="game-container">
+      <canvas id="game-canvas" width="800" height="600"></canvas>
+
+      <div class="hud">
+        <div class="hud-item score">⭐ 得分: <span id="score">0</span></div>
+        <div class="hud-item wave">🌊 波次: <span id="wave">1</span></div>
+        <div class="hud-item health">❤️ 生命: <span id="health">100</span></div>
+      </div>
+
+      <div class="game-over" id="game-over">
+        <h2>游戏结束！</h2>
+        <p>最终得分: <span id="final-score">0</span></p>
+        <p>击毁敌人: <span id="enemies-killed">0</span></p>
+        <button id="restart-btn">重新开始</button>
+      </div>
+
+      <div class="paused" id="paused">⏸️ 暂停</div>
+    </div>
+
+    <div class="controls">
+      <h3>🎮 游戏控制</h3>
+      <div class="control-list">
+        <div class="control-item">
+          <span class="key">← →</span>
+          <span>移动飞船</span>
+        </div>
+        <div class="control-item">
+          <span class="key">SPACE</span>
+          <span>发射子弹</span>
+        </div>
+        <div class="control-item">
+          <span class="key">P</span>
+          <span>暂停游戏</span>
+        </div>
+        <div class="control-item">
+          <span class="key">R</span>
+          <span>重新开始</span>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

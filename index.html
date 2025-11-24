@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jsKid 2.0 - 现代化2D游戏引擎演示</title>
+    <title>jsKid 2.0 - 现代化2D游戏引擎</title>
+    <meta http-equiv="refresh" content="0; url=/demos/">
     <style>
         body {
             margin: 0;
@@ -12,576 +13,62 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            text-align: center;
+            align-items: center;
+            justify-content: center;
             color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 2.5em;
+        .loading-container {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .header p {
-            margin: 10px 0 0 0;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        p {
             font-size: 1.2em;
             opacity: 0.9;
         }
 
-        .main-container {
-            flex: 1;
-            display: flex;
-            padding: 20px;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .game-section {
-            flex: 2;
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .info-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .info-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .info-card h3 {
-            margin: 0 0 15px 0;
-            color: #333;
-            font-size: 1.3em;
-        }
-
-        .info-card p {
-            margin: 0 0 10px 0;
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .canvas-container {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-        }
-
-        canvas {
-            border: 2px solid #333;
-            border-radius: 8px;
-            background: white;
-            max-width: 100%;
-            height: auto;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        a {
             color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
-        .stats {
-            background: #212529;
-            color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-top: 20px;
-        }
-
-        .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .feature-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #e9ecef;
-            color: #495057;
-        }
-
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-list li::before {
-            content: "✨";
-            margin-right: 10px;
-        }
-
-        .demo-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .demo-list li {
-            padding: 10px;
-            margin: 5px 0;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .demo-list li:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .demo-list strong {
-            display: block;
-            color: #333;
-            margin-bottom: 3px;
-        }
-
-        .demo-list small {
-            color: #666;
-        }
-
-        @media (max-width: 768px) {
-            .main-container {
-                flex-direction: column;
-            }
-
-            .header h1 {
-                font-size: 2em;
-            }
+            text-decoration: underline;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🚀 jsKid 2.0</h1>
-        <p>现代化2D游戏引擎 - TypeScript + ES6+ + Vite</p>
+    <div class="loading-container">
+        <h1>🎮 jsKid 2.0</h1>
+        <div class="spinner"></div>
+        <p>正在跳转到演示页面...</p>
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            如果没有自动跳转，请<a href="/demos/">点击这里</a>
+        </p>
     </div>
 
-    <div class="main-container">
-        <div class="game-section">
-            <div class="canvas-container">
-                <canvas id="gameCanvas" width="800" height="600"></canvas>
-            </div>
-
-            <div class="controls">
-                <button class="btn btn-primary" id="startBtn">开始游戏</button>
-                <button class="btn btn-secondary" id="pauseBtn">暂停</button>
-                <button class="btn btn-secondary" id="resumeBtn">恢复</button>
-                <button class="btn btn-secondary" id="resetBtn">重置</button>
-            </div>
-
-            <div class="stats" id="stats">
-                🎮 游戏状态: 准备就绪<br>
-                ⚡ 版本: jsKid 2.0.0<br>
-                📊 FPS: --<br>
-                🎯 对象数量: --<br>
-                ⏱️ 运行时间: 0s
-            </div>
-        </div>
-
-        <div class="info-section">
-            <div class="info-card">
-                <h3>🎯 当前演示</h3>
-                <p>这是一个简单的动画演示，展示了jsKid 2.0的核心功能。</p>
-                <ul class="feature-list">
-                    <li>TypeScript类型安全</li>
-                    <li>游戏循环和时间控制</li>
-                    <li>Canvas 2D渲染</li>
-                    <li>游戏对象系统</li>
-                    <li>输入处理</li>
-                    <li>事件系统</li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>🎮 演示说明</h3>
-                <ul class="demo-list">
-                    <li>
-                        <strong>基础Canvas动画</strong>
-                        <small>自动移动的彩色方块</small>
-                    </li>
-                    <li>
-                        <strong>键盘控制</strong>
-                        <small>使用方向键控制主角移动</small>
-                    </li>
-                    <li>
-                        <strong>鼠标交互</strong>
-                        <small>点击画布创建新对象</small>
-                    </li>
-                    <li>
-                        <strong>碰撞检测</strong>
-                        <small>对象之间的边界检测</small>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3>🛠️ 控制说明</h3>
-                <p><strong>方向键</strong>: 控制蓝色方块移动</p>
-                <p><strong>鼠标点击</strong>: 在点击位置创建新对象</p>
-                <p><strong>空格键</strong>: 暂停/恢复游戏</p>
-                <p><strong>R键</strong>: 重置游戏</p>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        console.log('🚀 jsKid 2.0 演示启动...');
-
-        // 获取Canvas和上下文
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const stats = document.getElementById('stats');
-
-        // 游戏状态
-        let gameRunning = false;
-        let gamePaused = false;
-        let animationId = null;
-        let startTime = Date.now();
-        let frameCount = 0;
-        let lastFrameTime = performance.now();
-
-        // 游戏对象
-        const player = {
-            x: 100,
-            y: 300,
-            width: 40,
-            height: 40,
-            color: '#667eea',
-            speed: 200,
-            dx: 0,
-            dy: 0
-        };
-
-        const enemies = [
-            { x: 300, y: 200, width: 30, height: 30, color: '#ff6b6b', speed: 100, phase: 0 },
-            { x: 500, y: 400, width: 25, height: 25, color: '#4ecdc4', speed: 80, phase: Math.PI }
-        ];
-
-        const particles = [];
-
-        // 键盘状态
-        const keys = {};
-
-        // 键盘事件处理
-        document.addEventListener('keydown', (e) => {
-            keys[e.key] = true;
-
-            if (e.key === ' ') {
-                e.preventDefault();
-                togglePause();
-            } else if (e.key.toLowerCase() === 'r') {
-                resetGame();
-            }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            keys[e.key] = false;
-        });
-
-        // 鼠标点击处理
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            createParticle(x, y);
-        });
-
-        // 创建粒子
-        function createParticle(x, y) {
-            particles.push({
-                x: x,
-                y: y,
-                width: 15,
-                height: 15,
-                color: `hsl(${Math.random() * 360}, 70%, 50%)`,
-                dx: (Math.random() - 0.5) * 4,
-                dy: (Math.random() - 0.5) * 4,
-                life: 1.0
-            });
-
-            // 限制粒子数量
-            if (particles.length > 50) {
-                particles.shift();
-            }
-        }
-
-        // 更新游戏逻辑
-        function update(deltaTime) {
-            if (gamePaused) return;
-
-            // 更新玩家移动
-            player.dx = 0;
-            player.dy = 0;
-
-            if (keys['ArrowUp']) player.dy = -player.speed * deltaTime;
-            if (keys['ArrowDown']) player.dy = player.speed * deltaTime;
-            if (keys['ArrowLeft']) player.dx = -player.speed * deltaTime;
-            if (keys['ArrowRight']) player.dx = player.speed * deltaTime;
-
-            player.x += player.dx;
-            player.y += player.dy;
-
-            // 限制玩家在画布内
-            player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
-            player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
-
-            // 更新敌人
-            enemies.forEach((enemy, index) => {
-                enemy.phase += deltaTime * 2;
-                enemy.y += Math.sin(enemy.phase) * enemy.speed * deltaTime;
-                enemy.x += Math.cos(enemy.phase * 0.7) * enemy.speed * 0.5 * deltaTime;
-
-                // 边界检测
-                if (enemy.y < 0) enemy.y = canvas.height;
-                if (enemy.y > canvas.height) enemy.y = 0;
-                if (enemy.x < 0) enemy.x = canvas.width;
-                if (enemy.x > canvas.width) enemy.x = 0;
-            });
-
-            // 更新粒子
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const particle = particles[i];
-                particle.x += particle.dx;
-                particle.y += particle.dy;
-                particle.life -= deltaTime * 2;
-
-                if (particle.life <= 0) {
-                    particles.splice(i, 1);
-                }
-            }
-
-            // 碰撞检测
-            enemies.forEach((enemy, index) => {
-                if (checkCollision(player, enemy)) {
-                    // 碰撞效果 - 创建爆炸粒子
-                    for (let i = 0; i < 10; i++) {
-                        createParticle(
-                            enemy.x + enemy.width / 2,
-                            enemy.y + enemy.height / 2
-                        );
-                    }
-                }
-            });
-        }
-
-        // 碰撞检测
-        function checkCollision(rect1, rect2) {
-            return rect1.x < rect2.x + rect2.width &&
-                   rect1.x + rect1.width > rect2.x &&
-                   rect1.y < rect2.y + rect2.height &&
-                   rect1.y + rect1.height > rect2.y;
-        }
-
-        // 渲染画面
-        function render() {
-            // 清空画布
-            ctx.fillStyle = '#f8f9fa';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // 绘制网格背景
-            ctx.strokeStyle = '#e9ecef';
-            ctx.lineWidth = 1;
-            for (let i = 0; i <= canvas.width; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(i, 0);
-                ctx.lineTo(i, canvas.height);
-                ctx.stroke();
-            }
-            for (let i = 0; i <= canvas.height; i += 50) {
-                ctx.beginPath();
-                ctx.moveTo(0, i);
-                ctx.lineTo(canvas.width, i);
-                ctx.stroke();
-            }
-
-            // 绘制粒子
-            particles.forEach(particle => {
-                ctx.globalAlpha = particle.life;
-                ctx.fillStyle = particle.color;
-                ctx.fillRect(particle.x - particle.width/2, particle.y - particle.height/2,
-                           particle.width, particle.height);
-            });
-            ctx.globalAlpha = 1;
-
-            // 绘制敌人
-            enemies.forEach(enemy => {
-                ctx.fillStyle = enemy.color;
-                ctx.beginPath();
-                ctx.arc(enemy.x + enemy.width/2, enemy.y + enemy.height/2,
-                       enemy.width/2, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // 绘制玩家
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-
-            // 绘制暂停状态
-            if (gamePaused) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 48px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('游戏暂停', canvas.width/2, canvas.height/2);
-                ctx.font = '20px Arial';
-                ctx.fillText('按空格键继续', canvas.width/2, canvas.height/2 + 40);
-            }
-        }
-
-        // 更新统计信息
-        function updateStats() {
-            const currentTime = Date.now();
-            const fps = frameCount / ((currentTime - lastFrameTime) / 1000);
-            const runTime = Math.floor((currentTime - startTime) / 1000);
-
-            stats.innerHTML = `
-                🎮 游戏状态: ${gamePaused ? '暂停中' : (gameRunning ? '运行中' : '已停止')}<br>
-                ⚡ 版本: jsKid 2.0.0<br>
-                📊 FPS: ${fps.toFixed(1)}<br>
-                🎯 对象数量: ${1 + enemies.length + particles.length}<br>
-                ⏱️ 运行时间: ${runTime}s
-            `;
-        }
-
-        // 游戏循环
-        function gameLoop() {
-            const now = performance.now();
-            const deltaTime = Math.min((now - lastFrameTime) / 1000, 0.1);
-
-            update(deltaTime);
-            render();
-
-            frameCount++;
-            updateStats();
-
-            lastFrameTime = now;
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        // 游戏控制函数
-        function startGame() {
-            if (!gameRunning) {
-                gameRunning = true;
-                gamePaused = false;
-                startTime = Date.now();
-                lastFrameTime = performance.now();
-                frameCount = 0;
-                gameLoop();
-            }
-        }
-
-        function pauseGame() {
-            gamePaused = true;
-        }
-
-        function resumeGame() {
-            gamePaused = false;
-        }
-
-        function togglePause() {
-            if (gamePaused) {
-                resumeGame();
-            } else {
-                pauseGame();
-            }
-        }
-
-        function resetGame() {
-            // 重置玩家位置
-            player.x = 100;
-            player.y = 300;
-
-            // 清空粒子
-            particles.length = 0;
-
-            // 重置时间
-            startTime = Date.now();
-            lastFrameTime = performance.now();
-            frameCount = 0;
-        }
-
-        function stopGame() {
-            gameRunning = false;
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-        }
-
-        // 绑定按钮事件
-        document.getElementById('startBtn').addEventListener('click', startGame);
-        document.getElementById('pauseBtn').addEventListener('click', pauseGame);
-        document.getElementById('resumeBtn').addEventListener('click', resumeGame);
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
-
-        // 初始渲染
-        render();
-        updateStats();
-
-        console.log('✅ jsKid 2.0 演示加载完成!');
-        console.log('🎮 按方向键控制蓝色方块，点击画布创建粒子，空格键暂停');
+    <script>
+        // 确保跳转正常工作
+        setTimeout(() => {
+            window.location.href = '/demos/';
+        }, 500);
     </script>
 </body>
 </html>

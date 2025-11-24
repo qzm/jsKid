@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>跑酷 - jsKid</title>
+<style>*{margin:0;padding:0}body{background:linear-gradient(135deg,#667eea,#764ba2);display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;font-family:Arial}h1{margin-bottom:20px}canvas{border:3px solid#333;border-radius:10px}.hud{margin-top:15px;font-size:1.5em}.game-over{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.9);padding:40px;border-radius:15px;display:none}.game-over.active{display:block}.game-over h2{color:#e74c3c}</style>
+</head>
+<body><h1>🏃 跑酷</h1><canvas id="gameCanvas" width="800" height="400"></canvas>
+<div class="hud">得分: <span id="score">0</span></div>
+<div class="game-over" id="game-over"><h2>游戏结束!</h2><p>得分: <span id="final-score">0</span></p></div>
+<p style="margin-top:20px">按空格键跳跃/开始</p>
+<script type="module" src="./main.ts"></script></body></html>

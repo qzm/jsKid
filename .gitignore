@@ -134,3 +134,8 @@ yarn.lock
 
 # Debug
 debug.log
+
+# AI Development Guides (private)
+CLAUDE.md
+**/CLAUDE.md
+.claude/

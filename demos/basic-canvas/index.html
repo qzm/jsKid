@@ -3,172 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jsKid 2.0 - 基础Canvas演示</title>
+    <title>Canvas基础绘图 - jsKid演示</title>
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .game-container {
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
         }
 
         canvas {
             border: 2px solid #333;
-            border-radius: 4px;
+            border-radius: 8px;
             background: white;
+            display: block;
+            margin: 0 auto;
         }
 
         .controls {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
             justify-content: center;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        button:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .info {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 15px;
+            flex-wrap: wrap;
             margin-top: 20px;
         }
 
-        .info h3 {
-            margin-top: 0;
-            color: #495057;
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .info ul {
-            margin-bottom: 0;
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #startBtn {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        #stopBtn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        #prevBtn, #nextBtn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .info-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .stats {
-            font-family: monospace;
-            background: #212529;
-            color: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            min-height: 60px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .demo-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .demo-info h3 {
+            margin-bottom: 10px;
+            color: #2ecc71;
+        }
+
+        .demo-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .demo-info li {
+            padding: 5px 0;
+        }
+
+        .demo-info li::before {
+            content: "✓ ";
+            color: #2ecc71;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .shortcuts {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .shortcuts h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+
+        .shortcuts p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            canvas {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>jsKid 2.0 - 基础Canvas演示</h1>
+        <h1>🎨 Canvas基础绘图</h1>
+        <p class="subtitle">探索Canvas 2D API的强大绘图功能</p>
 
-        <div class="game-container">
+        <div class="canvas-container">
             <canvas id="gameCanvas" width="800" height="600"></canvas>
 
             <div class="controls">
-                <button id="startBtn">开始游戏</button>
-                <button id="pauseBtn">暂停</button>
-                <button id="resumeBtn">恢复</button>
-                <button id="resetBtn">重置</button>
+                <button id="prevBtn">⬅️ 上一个</button>
+                <button id="startBtn">▶️ 开始</button>
+                <button id="stopBtn">⏸️ 暂停</button>
+                <button id="nextBtn">下一个 ➡️</button>
             </div>
+        </div>
 
+        <div class="info-panel">
             <div class="stats" id="stats">
                 准备就绪...
             </div>
-        </div>
 
-        <div class="info">
-            <h3>演示说明</h3>
-            <ul>
-                <li><strong>蓝色方块</strong>: 玩家对象，自动向右移动，到达边界后回到左侧</li>
-                <li><strong>红色圆形</strong>: 敌人对象，上下浮动移动</li>
-                <li><strong>键盘控制</strong>: 使用方向键控制蓝色方块移动</li>
-                <li><strong>鼠标控制</strong>: 点击画布可以在点击位置创建新的游戏对象</li>
-            </ul>
-            <p>这个演示展示了jsKid 2.0游戏引擎的基础功能，包括：</p>
-            <ul>
-                <li>✅ TypeScript类型安全</li>
-                <li>✅ 游戏循环和帧率控制</li>
-                <li>✅ 游戏对象系统</li>
-                <li>✅ 场景管理</li>
-                <li>✅ 输入处理</li>
-                <li>✅ Canvas渲染</li>
-                <li>✅ 事件系统</li>
-            </ul>
+            <div class="demo-info">
+                <h3>📚 演示内容</h3>
+                <ul>
+                    <li>基础图形 - 矩形、圆形、椭圆、圆角矩形</li>
+                    <li>路径绘制 - 直线、曲线、贝塞尔、星形、多边形</li>
+                    <li>变换操作 - 平移、旋转、缩放、倾斜</li>
+                    <li>渐变与阴影 - 线性、径向、锥形渐变，阴影效果</li>
+                    <li>文本渲染 - 字体、对齐、基线、度量</li>
+                    <li>图像处理 - 缩放、裁剪、像素操作、滤镜</li>
+                    <li>动画效果 - 波浪、旋转、脉动、弹跳</li>
+                </ul>
+            </div>
+
+            <div class="shortcuts">
+                <h4>⌨️ 键盘快捷键</h4>
+                <p>
+                    <strong>空格键</strong>: 开始/暂停演示<br>
+                    <strong>左右箭头</strong>: 切换演示<br>
+                </p>
+            </div>
         </div>
     </div>
 
-    <script type="module">
-        // 演示将在构建后使用
-        console.log('jsKid 2.0 基础Canvas演示');
-
-        // 这里将引入构建后的jsKid核心模块
-        // import { createJskid, BaseScene, BaseGameObject } from '@jskid/core';
-
-        // 暂时显示占位信息
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const stats = document.getElementById('stats');
-
-        function showPlaceholder() {
-            ctx.fillStyle = '#333';
-            ctx.font = '24px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('jsKid 2.0 演示', canvas.width / 2, canvas.height / 2 - 30);
-            ctx.fillText('正在构建中...', canvas.width / 2, canvas.height / 2 + 10);
-            ctx.font = '16px Arial';
-            ctx.fillText('请运行 `pnpm build` 构建项目', canvas.width / 2, canvas.height / 2 + 50);
-        }
-
-        showPlaceholder();
-
-        stats.innerHTML = `
-            jsKid 2.0 现代化游戏引擎<br>
-            版本: 2.0.0<br>
-            状态: 等待构建...
-        `;
-
-        // 禁用控制按钮（暂不可用）
-        document.querySelectorAll('button').forEach(btn => {
-            btn.disabled = true;
-        });
-    </script>
+    <script type="module" src="./main.ts"></script>
 </body>
 </html>

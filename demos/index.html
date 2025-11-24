@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jsKid游戏引擎 - 演示导航</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        padding: 40px 20px;
+        color: white;
+      }
+
+      h1 {
+        font-size: 3em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 2px;
+      }
+
+      .subtitle {
+        font-size: 1.2em;
+        opacity: 0.9;
+        margin-bottom: 10px;
+      }
+
+      .version {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+      }
+
+      .intro {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .intro h2 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.8em;
+      }
+
+      .intro p {
+        line-height: 1.8;
+        color: #555;
+        margin-bottom: 10px;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .feature {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 0.95em;
+      }
+
+      .feature strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 1.1em;
+      }
+
+      .demos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .demo-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+      }
+
+      .demo-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .demo-preview {
+        height: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4em;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .demo-preview::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(255, 255, 255, 0.05) 10px,
+          rgba(255, 255, 255, 0.05) 20px
+        );
+        animation: slide 20s linear infinite;
+      }
+
+      @keyframes slide {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
+
+      .demo-preview .icon {
+        position: relative;
+        z-index: 1;
+      }
+
+      .demo-content {
+        padding: 20px;
+      }
+
+      .demo-title {
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .demo-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+        min-height: 60px;
+      }
+
+      .demo-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .tag {
+        background: #f0f0f0;
+        color: #667eea;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: 500;
+      }
+
+      .tag.difficulty-easy {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .tag.difficulty-medium {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .tag.difficulty-hard {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .demo-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 500;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #f0f0f0;
+        color: #667eea;
+      }
+
+      .btn-secondary:hover {
+        background: #e0e0e0;
+      }
+
+      footer {
+        text-align: center;
+        padding: 30px 20px;
+        color: white;
+      }
+
+      footer a {
+        color: white;
+        text-decoration: none;
+        border-bottom: 1px solid white;
+        transition: opacity 0.3s;
+      }
+
+      footer a:hover {
+        opacity: 0.8;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 30px 0;
+        flex-wrap: wrap;
+      }
+
+      .stat-item {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 20px 40px;
+        border-radius: 15px;
+        text-align: center;
+        color: white;
+      }
+
+      .stat-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 1em;
+        opacity: 0.9;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2em;
+        }
+
+        .demos-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .features {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🎮 jsKid游戏引擎</h1>
+        <p class="subtitle">现代化2D游戏引擎 - TypeScript + Canvas</p>
+        <span class="version">v2.0.0</span>
+
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-number">12</span>
+            <span class="stat-label">演示项目</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">核心模块</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">5000+</span>
+            <span class="stat-label">代码行数</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="intro">
+        <h2>🚀 关于jsKid</h2>
+        <p>
+          jsKid是一个基于TypeScript的现代化2D游戏引擎，提供了完整的游戏开发工具链。
+          从原始的JavaScript项目重构而来，采用了最新的Web技术栈和最佳实践。
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <strong>🎨 渲染系统</strong>
+            Canvas 2D高性能渲染
+          </div>
+          <div class="feature">
+            <strong>🎭 精灵系统</strong>
+            完整的动画和精灵管理
+          </div>
+          <div class="feature">
+            <strong>🛠️ 工具库</strong>
+            数学、向量、颜色工具
+          </div>
+          <div class="feature">
+            <strong>⚡ 现代化</strong>
+            TypeScript + Vite + pnpm
+          </div>
+        </div>
+      </section>
+
+      <h2 style="color: white; text-align: center; margin-bottom: 30px; font-size: 2em;">
+        📚 演示项目
+      </h2>
+
+      <div class="demos-grid">
+        <!-- 基础演示 -->
+        <div class="demo-card" onclick="window.location.href='./basic-demo/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <span class="icon">🎨</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">基础渲染演示</h3>
+            <p class="demo-description">
+              展示jsKid引擎的基础渲染能力，包括动态对象创建、物理运动和边界检测。
+              适合初学者了解引擎的基本功能。
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">渲染</span>
+              <span class="tag">物理</span>
+              <span class="tag">交互</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./basic-demo/" class="btn btn-primary">🎮 运行演示</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 太空射击游戏 -->
+        <div class="demo-card" onclick="window.location.href='./space-shooter/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <span class="icon">🚀</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">太空射击游戏</h3>
+            <p class="demo-description">
+              完整的太空射击游戏，包含射击系统、道具系统、Boss战、连击系统等丰富游戏机制。
+              展示引擎构建真实游戏的能力。
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-hard">复杂</span>
+              <span class="tag">完整游戏</span>
+              <span class="tag">粒子效果</span>
+              <span class="tag">Boss战</span>
+              <span class="tag">道具系统</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./space-shooter/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas基础 -->
+        <div class="demo-card" onclick="window.location.href='./basic-canvas/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+            <span class="icon">🖼️</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">Canvas基础绘图</h3>
+            <p class="demo-description">
+              展示Canvas 2D API的基础绘图功能，包括图形绘制、文本渲染、变换操作等。
+              了解渲染器的底层实现。
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">Canvas</span>
+              <span class="tag">绘图API</span>
+              <span class="tag">教学</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./basic-canvas/" class="btn btn-primary">🎮 运行演示</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 贪吃蛇 -->
+        <div class="demo-card" onclick="window.location.href='./snake/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <span class="icon">🐍</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">贪吃蛇</h3>
+            <p class="demo-description">
+              经典的贪吃蛇游戏，展示网格系统和碰撞检测。吃到食物增长蛇身，避免撞墙和撞到自己。
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">经典游戏</span>
+              <span class="tag">网格系统</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./snake/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 打砖块 -->
+        <div class="demo-card" onclick="window.location.href='./breakout/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);">
+            <span class="icon">🧱</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">打砖块</h3>
+            <p class="demo-description">
+              经典打砖块游戏，展示物理反弹和关卡系统。控制挡板击球，打破所有砖块进入下一关。
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-medium">中等</span>
+              <span class="tag">物理引擎</span>
+              <span class="tag">关卡系统</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./breakout/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 俄罗斯方块 -->
+        <div class="demo-card" onclick="window.location.href='./tetris/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);">
+            <span class="icon">🧩</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">俄罗斯方块</h3>
+            <p class="demo-description">
+              永恒的经典方块游戏，展示网格逻辑和方块旋转。消除行数获得高分，速度越来越快！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-medium">中等</span>
+              <span class="tag">益智游戏</span>
+              <span class="tag">旋转算法</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./tetris/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pong -->
+        <div class="demo-card" onclick="window.location.href='./pong/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);">
+            <span class="icon">🏓</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">乒乓球对战</h3>
+            <p class="demo-description">
+              最早的电子游戏之一，展示简单AI和双人对战。控制挡板与AI展开激烈对决！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">对战游戏</span>
+              <span class="tag">AI系统</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./pong/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flappy Bird -->
+        <div class="demo-card" onclick="window.location.href='./flappy-bird/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);">
+            <span class="icon">🐦</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">飞扬的小鸟</h3>
+            <p class="demo-description">
+              流行的飞行游戏，展示重力系统和障碍生成。控制小鸟穿越管道，挑战高分！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-medium">中等</span>
+              <span class="tag">反应游戏</span>
+              <span class="tag">重力系统</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./flappy-bird/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 接水果 -->
+        <div class="demo-card" onclick="window.location.href='./fruit-catcher/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);">
+            <span class="icon">🍎</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">接水果</h3>
+            <p class="demo-description">
+              休闲接物游戏，展示掉落物品和计分系统。移动篮子接住水果，漏接10个游戏结束！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">休闲游戏</span>
+              <span class="tag">emoji</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./fruit-catcher/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 记忆配对 -->
+        <div class="demo-card" onclick="window.location.href='./memory-match/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+            <span class="icon">🎴</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">记忆配对</h3>
+            <p class="demo-description">
+              经典记忆卡牌游戏，展示翻牌动画和配对逻辑。记住卡片位置，用最少步数完成配对！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">益智游戏</span>
+              <span class="tag">动画效果</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./memory-match/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 跑酷 -->
+        <div class="demo-card" onclick="window.location.href='./runner/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <span class="icon">🏃</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">跑酷游戏</h3>
+            <p class="demo-description">
+              横向卷轴跑酷游戏，展示无限生成地形。跳跃躲避障碍，速度越来越快，挑战你的反应！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-medium">中等</span>
+              <span class="tag">动作游戏</span>
+              <span class="tag">无限地形</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./runner/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 打地鼠 -->
+        <div class="demo-card" onclick="window.location.href='./whack-a-mole/'">
+          <div class="demo-preview" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <span class="icon">🔨</span>
+          </div>
+          <div class="demo-content">
+            <h3 class="demo-title">打地鼠</h3>
+            <p class="demo-description">
+              经典反应速度游戏，展示随机生成和计时系统。快速点击冒出的地鼠，在限时内获得高分！
+            </p>
+            <div class="demo-tags">
+              <span class="tag difficulty-easy">简单</span>
+              <span class="tag">反应游戏</span>
+              <span class="tag">计时挑战</span>
+            </div>
+            <div class="demo-actions">
+              <a href="./whack-a-mole/" class="btn btn-primary">🎮 开始游戏</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="intro">
+        <h2>💡 快速开始</h2>
+        <p>想要使用jsKid开发自己的游戏？查看我们的文档和教程：</p>
+        <div style="margin-top: 20px; display: flex; gap: 15px; flex-wrap: wrap;">
+          <a href="../README.md" class="btn btn-primary" style="text-decoration: none; display: inline-block;">
+            📖 阅读文档
+          </a>
+          <a href="../DEVELOPMENT.md" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">
+            🛠️ 开发指南
+          </a>
+          <a href="../PROJECT_SUMMARY.md" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">
+            📊 项目总结
+          </a>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          jsKid游戏引擎 v2.0 | 现代化重构版本<br />
+          基于TypeScript + Vite + Canvas 2D<br />
+          <a href="https://github.com/qzm/jskid" target="_blank">GitHub仓库</a>
+        </p>
+        <p style="margin-top: 20px; opacity: 0.8; font-size: 0.9em;">
+          © 2025 jsKid Project | MIT License
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      console.log('🎮 jsKid游戏引擎演示导航');
+      console.log('📦 当前版本: v2.0.0');
+      console.log('🚀 选择一个演示项目开始体验！');
+
+      // 添加键盘快捷键
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '1') window.location.href = './basic-demo/';
+        if (e.key === '2') window.location.href = './space-shooter/';
+        if (e.key === '3') window.location.href = './basic-canvas/';
+      });
+
+      console.log('💡 提示: 按数字键1-3快速切换演示');
+    </script>
+  </body>
+</html>

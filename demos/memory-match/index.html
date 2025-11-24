@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>记忆配对 - jsKid</title>
+<style>*{margin:0;padding:0}body{background:linear-gradient(135deg,#a8edea,#fed6e3);display:flex;flex-direction:column;align-items:center;padding:20px;font-family:Arial}h1{margin-bottom:20px}.hud{margin-bottom:20px;font-size:1.5em}#cards-container{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:400px}.card{width:90px;height:90px;background:#fff;border-radius:10px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:.6s}.card.flipped{transform:rotateY(180deg)}.card .front,.card .back{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3em;backface-visibility:hidden}.card .back{transform:rotateY(180deg)}</style>
+</head>
+<body><h1>🎴 记忆配对</h1>
+<div class="hud">移动次数: <span id="moves">0</span></div>
+<div id="cards-container"></div>
+<script type="module" src="./main.ts"></script></body></html>

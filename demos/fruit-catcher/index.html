@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>接水果 - jsKid</title>
+<style>*{margin:0;padding:0}body{background:linear-gradient(135deg,#f093fb,#f5576c);display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;font-family:Arial}h1{margin-bottom:20px}canvas{border:3px solid#333;border-radius:10px;background:#e8f5e9}.hud{margin-top:15px;display:flex;gap:30px;font-size:1.2em}.game-over{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.9);padding:40px;border-radius:15px;display:none}.game-over.active{display:block}.game-over h2{color:#e74c3c;margin-bottom:20px}</style>
+</head>
+<body><h1>🍎 接水果</h1><canvas id="gameCanvas" width="600" height="600"></canvas>
+<div class="hud"><div>得分: <span id="score">0</span></div><div>漏接: <span id="missed">0</span>/10</div></div>
+<div class="game-over" id="game-over"><h2>游戏结束!</h2><p>得分: <span id="final-score">0</span></p></div>
+<p style="margin-top:20px">方向键移动 | 空格开始</p>
+<script type="module" src="./main.ts"></script></body></html>
