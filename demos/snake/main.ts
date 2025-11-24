@@ -106,7 +106,7 @@ class SnakeGame {
   private bindKeyboard(): void {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !this.gameRunning) {
-        this.start();
+        this.startGame();
         return;
       }
 
@@ -157,7 +157,7 @@ class SnakeGame {
     this.updateQuadtree();
   }
 
-  private start(): void {
+  private startGame(): void {
     this.gameRunning = true;
   }
 
