@@ -1,83 +1,146 @@
 /**
- * 接水果游戏
+ * Fruit Catcher - 使用 jsKid 引擎重构版本
  */
-const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
 
-const basket = { x: canvas.width / 2 - 50, y: canvas.height - 40, width: 100, height: 30, speed: 8 };
-const fruits: any[] = [];
-const FRUITS = ['🍎', '🍊', '🍌', '🍇', '🍓'];
-let score = 0, missed = 0, gameRunning = false, keys: any = {};
+import { createJskid } from '../../packages/core/src/index';
+import { CanvasRenderer } from '../../packages/renderer/src/index';
 
-function createFruit() {
-  fruits.push({
-    x: Math.random() * (canvas.width - 30),
-    y: -30,
-    size: 30,
-    speed: 2 + Math.random() * 3,
-    emoji: FRUITS[Math.floor(Math.random() * FRUITS.length)]
-  });
-}
+const CANVAS_WIDTH = 600;
+const CANVAS_HEIGHT = 600;
+const FRUITS = ['🍎', '🍊', '🍌', '🍇', '🍓', '🍑', '🍉', '🍒'];
 
-function update() {
-  if (!gameRunning) return;
-  if (keys['ArrowLeft'] && basket.x > 0) basket.x -= basket.speed;
-  if (keys['ArrowRight'] && basket.x < canvas.width - basket.width) basket.x += basket.speed;
+class FruitCatcher {
+  private engine;
+  private renderer: CanvasRenderer;
+  private basket = { x: CANVAS_WIDTH / 2 - 50, y: CANVAS_HEIGHT - 50, width: 100, height: 30 };
+  private fruits: Array<{ x: number; y: number; size: number; speed: number; emoji: string }> = [];
+  private score = 0;
+  private missed = 0;
+  private gameRunning = false;
+  private keys: { [key: string]: boolean } = {};
 
-  fruits.forEach((f, i) => {
-    f.y += f.speed;
-    if (f.y + f.size > basket.y && f.x + f.size > basket.x && f.x < basket.x + basket.width) {
-      fruits.splice(i, 1);
-      score += 10;
-      updateUI();
-    } else if (f.y > canvas.height) {
-      fruits.splice(i, 1);
-      missed++;
-      updateUI();
-      if (missed >= 10) gameOver();
-    }
-  });
+  constructor(canvasId: string) {
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
 
-  if (Math.random() < 0.02) createFruit();
-}
+    this.renderer = new CanvasRenderer(canvas);
+    this.engine = createJskid({ canvasWidth: CANVAS_WIDTH, canvasHeight: CANVAS_HEIGHT, fps: 60, autoStart: false });
 
-function render() {
-  ctx.fillStyle = '#e8f5e9';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#8d6e63';
-  ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
-  fruits.forEach(f => {
-    ctx.font = `${f.size}px Arial`;
-    ctx.fillText(f.emoji, f.x, f.y);
-  });
-}
+    this.engine.on('engine:update', () => this.update());
+    this.engine.on('engine:render', () => this.render());
 
-function gameLoop() {
-  update();
-  render();
-  requestAnimationFrame(gameLoop);
-}
-
-function gameOver() {
-  gameRunning = false;
-  document.getElementById('game-over')!.classList.add('active');
-  document.getElementById('final-score')!.textContent = score.toString();
-}
-
-function updateUI() {
-  document.getElementById('score')!.textContent = score.toString();
-  document.getElementById('missed')!.textContent = missed.toString();
-}
-
-document.addEventListener('keydown', e => {
-  keys[e.code] = true;
-  if (e.code === 'Space' && !gameRunning) {
-    score = 0; missed = 0; fruits.length = 0; gameRunning = true;
-    document.getElementById('game-over')!.classList.remove('active');
-    updateUI();
+    document.addEventListener('keydown', (e) => {
+      this.keys[e.code] = true;
+      if (e.code === 'Space' && !this.gameRunning) this.startGame();
+    });
+    document.addEventListener('keyup', (e) => (this.keys[e.code] = false));
   }
-});
-document.addEventListener('keyup', e => keys[e.code] = false);
 
-gameLoop();
-console.log('🍎 接水果游戏加载完成！');
+  private startGame(): void {
+    this.score = 0;
+    this.missed = 0;
+    this.fruits = [];
+    this.gameRunning = true;
+    document.getElementById('game-over')!.classList.remove('active');
+    this.updateUI();
+  }
+
+  private update(): void {
+    if (!this.gameRunning) return;
+
+    // 移动篮子
+    if (this.keys['ArrowLeft'] && this.basket.x > 0) this.basket.x -= 8;
+    if (this.keys['ArrowRight'] && this.basket.x < CANVAS_WIDTH - this.basket.width) this.basket.x += 8;
+
+    // 生成水果
+    if (Math.random() < 0.02) {
+      this.fruits.push({
+        x: Math.random() * (CANVAS_WIDTH - 30),
+        y: -30,
+        size: 30,
+        speed: 2 + Math.random() * 3,
+        emoji: FRUITS[Math.floor(Math.random() * FRUITS.length)],
+      });
+    }
+
+    // 更新水果
+    for (let i = this.fruits.length - 1; i >= 0; i--) {
+      const f = this.fruits[i];
+      f.y += f.speed;
+
+      // 接到水果
+      if (
+        f.y + f.size > this.basket.y &&
+        f.x + f.size > this.basket.x &&
+        f.x < this.basket.x + this.basket.width
+      ) {
+        this.fruits.splice(i, 1);
+        this.score += 10;
+        this.updateUI();
+      }
+      // 漏掉水果
+      else if (f.y > CANVAS_HEIGHT) {
+        this.fruits.splice(i, 1);
+        this.missed++;
+        this.updateUI();
+        if (this.missed >= 10) this.endGame();
+      }
+    }
+  }
+
+  private render(): void {
+    const ctx = this.renderer.getContext();
+    this.renderer.clear('#e8f5e9');
+
+    // 篮子
+    ctx.fillStyle = '#8d6e63';
+    ctx.fillRect(this.basket.x, this.basket.y, this.basket.width, this.basket.height);
+    ctx.strokeStyle = '#5d4037';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(this.basket.x, this.basket.y, this.basket.width, this.basket.height);
+
+    // 水果
+    this.fruits.forEach((f) => {
+      ctx.font = `${f.size}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.fillText(f.emoji, f.x + f.size / 2, f.y + f.size);
+    });
+
+    // 提示
+    if (!this.gameRunning) {
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 32px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Fruit Catcher', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+      ctx.font = '18px Arial';
+      ctx.fillText('按空格开始,方向键移动', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 40);
+    }
+
+    ctx.fillStyle = '#000';
+    ctx.font = '12px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('jsKid Engine', CANVAS_WIDTH - 10, 20);
+  }
+
+  private endGame(): void {
+    this.gameRunning = false;
+    document.getElementById('game-over')!.classList.add('active');
+    document.getElementById('final-score')!.textContent = this.score.toString();
+  }
+
+  private updateUI(): void {
+    document.getElementById('score')!.textContent = this.score.toString();
+    document.getElementById('missed')!.textContent = this.missed.toString();
+  }
+
+  start(): void {
+    console.log('🍎 Fruit Catcher - jsKid引擎版本');
+    this.engine.start();
+  }
+}
+
+new FruitCatcher('gameCanvas').start();
+document.getElementById('restart-btn')?.addEventListener('click', () => window.location.reload());
