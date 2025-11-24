@@ -119,7 +119,7 @@ class FlappyBirdGame {
     this.canvas.width = CANVAS_WIDTH;
     this.canvas.height = CANVAS_HEIGHT;
 
-    this.renderer = new CanvasRenderer(this.canvas);
+    this.renderer = new CanvasRenderer({ canvas: this.canvas });
 
     this.engine = createJskid({
       debug: false,

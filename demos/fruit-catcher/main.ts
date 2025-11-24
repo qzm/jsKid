@@ -24,7 +24,7 @@ class FruitCatcher {
     canvas.width = CANVAS_WIDTH;
     canvas.height = CANVAS_HEIGHT;
 
-    this.renderer = new CanvasRenderer(canvas);
+    this.renderer = new CanvasRenderer({ canvas });
     this.engine = createJskid({ canvasWidth: CANVAS_WIDTH, canvasHeight: CANVAS_HEIGHT, fps: 60, autoStart: false });
 
     this.engine.on('engine:update', () => this.update());

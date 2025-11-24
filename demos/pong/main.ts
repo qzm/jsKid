@@ -56,7 +56,7 @@ class PongGame {
     this.canvas.height = CANVAS_HEIGHT;
 
     // 创建渲染器
-    this.renderer = new CanvasRenderer(this.canvas);
+    this.renderer = new CanvasRenderer({ canvas: this.canvas });
 
     // 创建引擎
     this.engine = createJskid({

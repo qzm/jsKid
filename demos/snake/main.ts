@@ -78,7 +78,7 @@ class SnakeGame {
     this.canvas.width = CANVAS_WIDTH;
     this.canvas.height = CANVAS_HEIGHT;
 
-    this.renderer = new CanvasRenderer(this.canvas);
+    this.renderer = new CanvasRenderer({ canvas: this.canvas });
     this.quadtree = new Quadtree({ x: 0, y: 0, width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, 8);
 
     this.engine = createJskid({

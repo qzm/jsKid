@@ -522,7 +522,7 @@ class SpaceShooterGame {
     this.canvas.width = GAME_CONFIG.width;
     this.canvas.height = GAME_CONFIG.height;
 
-    this.renderer = new CanvasRenderer(this.canvas);
+    this.renderer = new CanvasRenderer({ canvas: this.canvas });
 
     this.engine = createJskid({
       debug: false,
