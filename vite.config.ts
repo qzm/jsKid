@@ -4,6 +4,10 @@ import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   base: process.env.NODE_ENV === 'production' ? '/jsKid/' : '/',
+  esbuild: {
+    // 忽略TypeScript类型错误，只做转译
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  },
   server: {
     port: 6000,
     open: true
