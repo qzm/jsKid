@@ -3,32 +3,29 @@ import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/jsKid/' : '/',
   server: {
     port: 6000,
     open: true
   },
   build: {
-    lib: {
-      entry: {
-        'jskid': resolve(__dirname, 'packages/core/src/index.ts'),
-        'jskid/renderer': resolve(__dirname, 'packages/renderer/src/index.ts'),
-        'jskid/sprite': resolve(__dirname, 'packages/sprite/src/index.ts'),
-        'jskid/physics': resolve(__dirname, 'packages/physics/src/index.ts'),
-        'jskid/input': resolve(__dirname, 'packages/input/src/index.ts'),
-        'jskid/audio': resolve(__dirname, 'packages/audio/src/index.ts'),
-        'jskid/utils': resolve(__dirname, 'packages/utils/src/index.ts')
-      },
-      name: 'Jskid',
-      formats: ['es', 'cjs', 'umd'],
-      fileName: (format, entryName) => {
-        const extension = format === 'es' ? 'mjs' : 'js'
-        return `${entryName}.${extension}`
-      }
-    },
+    outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
-      external: [],
-      output: {
-        globals: {}
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        demos: resolve(__dirname, 'demos/index.html'),
+        snake: resolve(__dirname, 'demos/snake/index.html'),
+        breakout: resolve(__dirname, 'demos/breakout/index.html'),
+        tetris: resolve(__dirname, 'demos/tetris/index.html'),
+        pong: resolve(__dirname, 'demos/pong/index.html'),
+        flappyBird: resolve(__dirname, 'demos/flappy-bird/index.html'),
+        spaceShooter: resolve(__dirname, 'demos/space-shooter/index.html'),
+        fruitCatcher: resolve(__dirname, 'demos/fruit-catcher/index.html'),
+        runner: resolve(__dirname, 'demos/runner/index.html'),
+        whackAMole: resolve(__dirname, 'demos/whack-a-mole/index.html'),
+        memoryMatch: resolve(__dirname, 'demos/memory-match/index.html'),
+        basicCanvas: resolve(__dirname, 'demos/basic-canvas/index.html')
       }
     },
     sourcemap: true,

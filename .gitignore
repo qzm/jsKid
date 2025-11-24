@@ -72,6 +72,7 @@ dist
 # Gatsby files
 .cache/
 public
+!public/.nojekyll
 
 # Storybook build outputs
 .out
